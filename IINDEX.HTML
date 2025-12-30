@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SensorySafe Navigation</title>
+  <meta name="description" content="SensorySafe Navigation helps people with autism and sensory sensitivities find quiet, comfortable routes in cities using AI and community reports." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Azure Maps Web SDK -->
+  <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.css" />
+  <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.js"></script>
+ 
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="#home" aria-label="SensorySafe Navigation home">
+        <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" fill="#0EA5A2"></circle>
+          <path d="M12 7l4 10-4-3-4 3 4-10z" fill="#FFFFFF"></path>
+        </svg>
+        <span class="brand-name">SensorySafe</span>
+      </a>
+
+      <button class="nav-toggle" aria-controls="primary-nav" aria-expanded="false">
+        <span class="nav-toggle__bars" aria-hidden="true"></span>
+        <span class="sr-only">Toggle navigation</span>
+      </button>
+
+      <nav id="primary-nav" class="site-nav" aria-label="Primary">
+        <ul class="nav-list">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#problem">Problem</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#demo">Demo</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+        <a class="btn btn--primary btn--sm" href="#demo">Try the App</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section id="home" class="hero" aria-labelledby="hero-title">
+      <div class="container hero-inner">
+        <div class="hero-content reveal">
+          <h1 id="hero-title">Not just the fastest route, but the most comfortable one.</h1>
+          <p class="hero-subtitle">
+            AI-guided paths that reduce sensory overload—favoring quiet streets, parks, and calming spaces.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn--primary btn--lg" href="#demo">Try the App</a>
+            <a class="btn btn--ghost btn--lg" href="#features">Explore Features</a>
+          </div>
+
+          <div class="legend" aria-label="Map legend">
+            <div class="legend-item">
+              <span class="legend-swatch legend-swatch--quiet" aria-hidden="true"></span>
+              <span>Quiet zones</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-swatch legend-swatch--noisy" aria-hidden="true"></span>
+              <span>Noisy zones</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Azure Map container -->
+        <figure class="hero-map reveal" aria-describedby="map-desc">
+          <div id="azureMap" role="img" aria-labelledby="map-title map-desc"></div>
+          <div id="map-title" class="sr-only">City map showing quiet and noisy areas with suggested comfortable routes</div>
+          <div id="map-desc" class="sr-only">Green heat indicates quiet zones; red heat indicates noisy zones. A comfort-aware route avoids high-noise areas.</div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Quick comparison: Why choose us -->
+    <section id="comparison" class="section" aria-labelledby="comparison-title">
+      <div class="container reveal">
+        <h2 id="comparison-title">Why choose SensorySafe?</h2>
+        <p class="section-intro">A quick comparison to help you choose a navigation tool that prioritizes sensory comfort.</p>
+        <div class="grid grid--2 comparison-grid">
+          <div class="problem-card reveal comparison-card">
+            <h3>SensorySafe — designed for comfort</h3>
+            <ul>
+              <li>Prioritizes quiet & low-crowd routes by default</li>
+              <li>Community-sourced sensory reports (noise, crowding, lighting)</li>
+              <li>AI forecasts comfort by time and location</li>
+              <li>Customizable, gentle alerts and filters</li>
+            </ul>
+          </div>
+
+          <div class="problem-card reveal comparison-card">
+            <h3>Other navigation apps</h3>
+            <ul>
+              <li>Optimized for fastest or shortest travel time</li>
+              <li>Little or no sensory context (noise, crowds)</li>
+              <li>No comfort forecasting tailored to sensitivity</li>
+              <li>Standard audible notifications by default</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Problem in easy language -->
+    <section id="problem" class="section section--alt" aria-labelledby="problem-title">
+      <div class="container reveal">
+        <h2 id="problem-title">The problem in easy language</h2>
+        <div class="problem-grid">
+          <div class="problem-card">
+            <h3>Why moving around is hard</h3>
+            <ul>
+              <li>Some places are too noisy (traffic, crowds, construction).</li>
+              <li>Some routes are too crowded (markets, stations).</li>
+              <li>People don’t know in advance which areas will feel comfortable or overwhelming.</li>
+            </ul>
+          </div>
+          <div class="problem-card">
+            <h3>Why it matters</h3>
+            <ul>
+              <li>Stress and anxiety increase in noisy or crowded places.</li>
+              <li>Families and caregivers struggle to plan calm routes.</li>
+              <li>Many avoid going out, reducing freedom and independence.</li>
+            </ul>
+          </div>
+          <div class="problem-card">
+            <h3>What current apps miss</h3>
+            <p>Most navigation apps only show the fastest or shortest route. They don’t tell you which path is quiet, less crowded, or sensory-friendly.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="section" aria-labelledby="features-title">
+      <div class="container">
+        <h2 id="features-title">Features</h2>
+
+        <div class="grid grid--4">
+          <article class="feature-card reveal">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="28" height="28"><path d="M4 4h16v4H4zM4 10h10v4H4zM4 16h7v4H4z" fill="#0EA5A2"></path></svg>
+            </div>
+            <h3 class="feature-title">Real-time reports</h3>
+            <p class="feature-text">Community updates on noise, crowding, lighting, and construction.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="28" height="28"><circle cx="12" cy="12" r="8" fill="#3B82F6" opacity="0.25"></circle><path d="M8 12h8M12 8v8" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"></path></svg>
+            </div>
+            <h3 class="feature-title">AI predictions</h3>
+            <p class="feature-text">Forecasts comfort levels by time and location to plan ahead.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="28" height="28"><path d="M5 19c6-2 8-5 9-9l5 2" stroke="#22C55E" stroke-width="2" fill="none" stroke-linecap="round"></path><circle cx="5" cy="19" r="2" fill="#22C55E"></circle><circle cx="19" cy="12" r="2" fill="#22C55E"></circle></svg>
+            </div>
+            <h3 class="feature-title">Sensory-friendly routes</h3>
+            <p class="feature-text">Paths that favor quiet streets, parks, and low-stimulus areas.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="28" height="28"><path d="M12 3l9 16H3L12 3z" fill="#EF4444" opacity="0.25"></path><path d="M12 10v4" stroke="#EF4444" stroke-width="2" stroke-linecap="round"></path></svg>
+            </div>
+            <h3 class="feature-title">Gentle alerts</h3>
+            <p class="feature-text">Notifications when nearby conditions change—no loud sounds.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Demo -->
+    <section id="demo" class="section section--alt" aria-labelledby="demo-title">
+      <div class="container reveal">
+        <h2 id="demo-title">Try the app</h2>
+        <p class="section-intro">Generate a comfort-aware route that avoids high-noise areas.</p>
+        <div class="demo-box">
+          <div class="demo-controls">
+            <label class="sr-only" for="origin">Origin</label>
+            <input id="origin" type="text" placeholder="Origin (lat, lon)" value="28.6692, 77.4538" />
+            <label class="sr-only" for="destination">Destination</label>
+            <input id="destination" type="text" placeholder="Destination (lat, lon)" value="28.6384, 77.4316" />
+            <button class="btn btn--primary" id="comfortRouteBtn">Suggest comfortable route</button>
+          </div>
+          <p id="demo-status" class="demo-status" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="section" aria-labelledby="testimonials-title">
+      <div class="container">
+        <h2 id="testimonials-title">What people say</h2>
+        <div class="grid grid--2">
+          <blockquote class="quote reveal">
+            <p>“For the first time, I can choose paths that feel good to me—not just fast.”</p>
+            <footer><cite>Ananya, student</cite></footer>
+          </blockquote>
+          <blockquote class="quote reveal">
+            <p>“The alerts help me avoid loud areas when I’m already stressed. It’s a relief.”</p>
+            <footer><cite>Rahul, designer</cite></footer>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section section--alt" aria-labelledby="contact-title">
+      <div class="container reveal">
+        <h2 id="contact-title">Contact us</h2>
+        <p class="section-intro">Questions or ideas? We’d love to hear from you.</p>
+        <form class="contact-form" aria-describedby="contact-help">
+          <div class="input-row">
+            <div class="input-group">
+              <label for="name">Name</label>
+              <input id="name" name="name" type="text" autocomplete="name" required />
+            </div>
+            <div class="input-group">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required />
+            </div>
+          </div>
+          <div class="input-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="4" required></textarea>
+          </div>
+          <button type="submit" class="btn btn--primary">Send</button>
+          <p id="contact-help" class="form-hint">We respond within 2–3 business days.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a class="logo" href="#home" aria-label="SensorySafe Navigation home">
+          <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" fill="#0EA5A2"></circle>
+            <path d="M12 7l4 10-4-3-4 3 4-10z" fill="#FFFFFF"></path>
+          </svg>
+          <span class="brand-name">SensorySafe</span>
+        </a>
+        <p>Find routes that feel right for you.</p>
+      </div>
+
+      <nav aria-label="Footer">
+        <ul class="footer-list">
+          <li><a href="#problem">Problem</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#demo">Demo</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="footer-social" aria-label="Social media">
+        <a href="#" aria-label="Twitter"><span aria-hidden="true">𝕏</span></a>
+        <a href="#" aria-label="LinkedIn"><span aria-hidden="true">in</span></a>
+        <a href="#" aria-label="Instagram"><span aria-hidden="true">◎</span></a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <small>&copy; <span id="year"></span> SensorySafe Navigation. All rights reserved.</small>
+    </div>
+  </footer>
+
+
+  <script src="script.js"></script>
+</body>
+</html>
