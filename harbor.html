@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harbor - Navigate with Peace (Azure Maps)</title>
+
+    <!-- Fonts (Same as index.html) -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Leaflet Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use main site styles -->
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        harbor: {
+                            50: 'var(--harbor-50)',
+                            100: 'var(--harbor-100)',
+                            200: 'var(--harbor-200)',
+                            300: 'var(--harbor-300)',
+                            400: 'var(--harbor-400)',
+                            500: 'var(--harbor-500)',
+                            600: 'var(--harbor-600)',
+                            700: 'var(--harbor-700)',
+                            800: 'var(--harbor-800)',
+                            900: 'var(--harbor-900)',
+                        },
+                        sand: {
+                            50: 'var(--sand-50)',
+                            100: 'var(--sand-100)',
+                            200: 'var(--sand-200)',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Open Sans"', 'sans-serif'],
+                        heading: ['"Poppins"', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(14, 165, 162, 0.15)',
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            /* Light mode defaults */
+            --harbor-50: #F0F9F9;
+            --harbor-100: #Ddf2f2;
+            --harbor-200: #Bce3e3;
+            --harbor-300: #90cece;
+            --harbor-400: #5FB3B3;
+            --harbor-500: #0EA5A2;
+            --harbor-600: #0C8C89;
+            --harbor-700: #286060;
+            --harbor-800: #254E4E;
+            --harbor-900: #214141;
+
+            --sand-50: #F8FAFC;
+            --sand-100: #F7F3EB;
+            --sand-200: #EFE6D6;
+
+            --panel-bg: #FFFFFF;
+            --input-bg: #F8FAFC;
+            --input-border: #E2E8F0;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                /* Dark mode overrides */
+                --harbor-50: #1a2e2e;
+                --harbor-100: #214141;
+                --harbor-200: #254E4E;
+                --harbor-300: #286060;
+                --harbor-400: #0C8C89;
+                --harbor-500: #0EA5A2;
+                /* Keep primary same or slightly lighter? Keep same for now */
+                --harbor-600: #5FB3B3;
+                /* Invert darker shades? */
+                --harbor-700: #90cece;
+                --harbor-800: #Bce3e3;
+                --harbor-900: #F0F9F9;
+                /* Text should be light */
+
+                --sand-50: #0F172A;
+                /* Match surface dark */
+                --sand-100: #1E293B;
+                --sand-200: #334155;
+
+                --panel-bg: #1E293B;
+                --input-bg: #0F172A;
+                --input-border: #334155;
+            }
+        }
+
+        /* Inherit body styles from style.css */
+
+        *:focus-visible {
+            outline: 2px solid var(--harbor-500);
+            outline-offset: 2px;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--harbor-500);
+            color: white;
+            padding: 8px;
+            z-index: 9999;
+            transition: top 0.3s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            border-radius: 1rem;
+            z-index: 10;
+        }
+
+        .loader {
+            border: 3px solid var(--sand-100);
+            border-radius: 50%;
+            border-top: 3px solid var(--harbor-500);
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse-soft {
+            0% {
+                box-shadow: 0 0 0 0 rgba(14, 165, 162, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(14, 165, 162, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(14, 165, 162, 0);
+            }
+        }
+
+        .animate-pulse-soft {
+            animation: pulse-soft 2s infinite;
+        }
+
+        .toggle-container {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .toggle-checkbox {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-label {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--input-border);
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+
+        .toggle-container input:checked+.toggle-label {
+            background-color: var(--harbor-500);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .toggle-container input:checked+.toggle-label .toggle-slider {
+            transform: translateX(20px);
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            background: var(--input-border);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--harbor-500);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(14, 165, 162, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="#demo" class="skip-link focus:outline-none">Skip to main content</a>
+
+    <div id="site-header-placeholder"></div>
+
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-0 pointer-events-none opacity-50">
+        <div
+            class="absolute top-20 left-10 w-72 h-72 bg-harbor-200 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-soft">
+        </div>
+        <div
+            class="absolute top-40 right-10 w-72 h-72 bg-sand-200 rounded-full mix-blend-multiply filter blur-3xl opacity-70">
+        </div>
+    </div>
+
+    <section id="demo" class="py-12 relative min-h-screen">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div
+                class="bg-sand-50 rounded-3xl shadow-xl overflow-hidden border border-harbor-100 flex flex-col lg:flex-row h-screen lg:h-[700px] max-h-[90vh]">
+
+                <div
+                    class="w-full lg:w-1/3 p-6 lg:p-8 flex flex-col border-b lg:border-b-0 lg:border-r border-harbor-100 bg-[var(--panel-bg)] z-20 overflow-y-auto">
+                    <h2 class="text-2xl lg:text-3xl font-heading font-bold text-harbor-900 mb-6">Plan a Calm Route</h2>
+
+                    <div class="space-y-4 mb-6">
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fa-regular fa-circle text-harbor-400"></i>
+                            </div>
+                            <input type="text" id="startInput"
+                                class="block w-full pl-10 pr-10 py-3 border border-gray-200 rounded-xl leading-5 bg-[var(--input-bg)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-harbor-500 focus:border-harbor-500 transition duration-150 ease-in-out sm:text-sm"
+                                placeholder="Current Location" value="Sector 1, CGC Landran">
+                            <button id="locateMeBtn"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-harbor-400 hover:text-harbor-600 transition-colors"
+                                title="Use Current Location">
+                                <i class="fa-solid fa-location-crosshairs"></i>
+                            </button>
+                            <div id="startSuggestions"
+                                class="absolute top-full mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg hidden max-h-48 overflow-y-auto z-50">
+                            </div>
+                        </div>
+
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-location-dot text-harbor-500"></i>
+                            </div>
+                            <input type="text" id="endInput"
+                                class="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl leading-5 bg-[var(--input-bg)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-harbor-500 focus:border-harbor-500 transition duration-150 ease-in-out sm:text-sm"
+                                placeholder="Destination" value="Sukhna Lake, Chandigarh">
+                            <div id="endSuggestions"
+                                class="absolute top-full mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg hidden max-h-48 overflow-y-auto z-50">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6 mb-8">
+                        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Sensory Preferences
+                        </h3>
+
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <label class="text-sm font-medium text-harbor-900">Noise Tolerance</label>
+                                <span id="noiseValue"
+                                    class="text-xs text-harbor-500 font-medium bg-harbor-50 px-2 py-1 rounded">Quiet
+                                    Priority</span>
+                            </div>
+                            <input type="range" id="noiseSlider" min="1" max="100" value="20"
+                                class="w-full h-2 bg-[var(--input-border)] rounded-lg appearance-none cursor-pointer">
+                            <div class="flex justify-between text-xs text-gray-400 mt-1">
+                                <span>Silent</span>
+                                <span>Lively</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <label
+                                class="flex items-center justify-between p-3 border border-gray-100 rounded-xl hover:bg-harbor-50 transition-colors cursor-pointer group">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center">
+                                        <i class="fa-solid fa-users"></i>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-700">Avoid Crowds</span>
+                                </div>
+                                <div class="toggle-container">
+                                    <input type="checkbox" id="toggle-crowds" class="toggle-checkbox">
+                                    <label class="toggle-label" for="toggle-crowds">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </label>
+
+                            <label
+                                class="flex items-center justify-between p-3 border border-gray-100 rounded-xl hover:bg-harbor-50 transition-colors cursor-pointer group">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-blue-100 text-blue-500 flex items-center justify-center">
+                                        <i class="fa-solid fa-hard-hat"></i>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-700">Avoid Construction</span>
+                                </div>
+                                <div class="toggle-container">
+                                    <input type="checkbox" id="toggle-const" class="toggle-checkbox">
+                                    <label class="toggle-label" for="toggle-const">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-gray-100">
+                        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Live Demo</h3>
+                        <button id="addNoiseBtn"
+                            class="w-full py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-bullhorn text-orange-500"></i>
+                            <span>Simulate Sudden Noise</span>
+                        </button>
+                        <button id="clearZonesBtn"
+                            class="w-full mt-2 py-2 px-4 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-trash-can text-red-500"></i>
+                            <span>Clear All Zones</span>
+                        </button>
+                        <p id="demoModeHint" class="hidden text-xs text-orange-600 mt-2 text-center animate-pulse">
+                            Click anywhere on the map to add a noise source.
+                        </p>
+                    </div>
+
+                    <button id="findRouteBtn"
+                        class="mt-auto w-full bg-harbor-500 hover:bg-harbor-600 text-white font-semibold py-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 group">
+                        <span>Suggest Comfortable Route</span>
+                        <i class="fa-solid fa-wand-magic-sparkles group-hover:rotate-12 transition-transform"></i>
+                    </button>
+                </div>
+
+                <div class="relative w-full lg:w-2/3 h-full bg-[var(--sand-50)]">
+                    <div id="map"></div>
+
+                    <div
+                        class="absolute top-4 right-4 z-[400] bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg border border-gray-100 text-xs">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-3 h-3 rounded-full bg-orange-400 opacity-50"></span>
+                            <span class="text-gray-600">High Stimulation Zone</span>
+                        </div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-3 h-3 rounded-full bg-harbor-500"></span>
+                            <span class="text-gray-600">Harbor Route</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-gray-400 border border-white"></span>
+                            <span class="text-gray-600">Standard Route</span>
+                        </div>
+                    </div>
+
+                    <div id="gentleAlert"
+                        class="absolute bottom-6 left-1/2 -translate-x-1/2 z-[400] bg-white/95 backdrop-blur px-4 py-3 rounded-full shadow-lg border-l-4 border-yellow-400 hidden flex items-center gap-3 transition-all duration-500">
+                        <i class="fa-solid fa-circle-info text-yellow-500"></i>
+                        <span id="alertText" class="text-sm font-medium text-gray-700">Note: Construction detected.
+                            Re-routing...</span>
+                    </div>
+
+                    <div id="routeStats"
+                        class="absolute bottom-6 left-6 z-[400] bg-white/95 backdrop-blur px-4 py-3 rounded-xl shadow-lg border border-gray-100 hidden space-y-1 text-sm">
+                        <div class="flex items-center gap-2 text-harbor-700 font-medium">
+                            <i class="fa-solid fa-route text-harbor-500"></i>
+                            <span id="routeDistance">1.2 km Harbor Route (+15% longer)</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-gray-600">
+                            <i class="fa-solid fa-volume-xmark text-green-500"></i>
+                            <span id="quietness">95% quieter path</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="site-footer-placeholder"></div>
+
+    <script src="layout.js"></script>
+
+    <script>
+        let map, noiseLayer, constructionLayer, routeLayer, startMarker, endMarker;
+        let startCoords = [76.8, 30.755]; // Lng, Lat
+        let endCoords = [76.78, 30.74];
+
+        let isCalculating = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initMap();
+            initControls();
+            setupAutocomplete();
+            // Don't auto-locate on page load - let user click "Locate Me" button
+            // getUserLocation();
+        });
+
+        function getUserLocation() {
+            if (navigator.geolocation) {
+                // Show loading state
+                const startInput = document.getElementById('startInput');
+                if (startInput) startInput.value = "Locating...";
+
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude, accuracy } = position.coords;
+                        startCoords = [longitude, latitude];
+
+                        console.log("Location detected:", { latitude, longitude, accuracy: Math.round(accuracy) + "m" });
+
+                        if (startInput) startInput.value = "Your Current Location";
+
+                        if (startMarker) {
+                            startMarker.setLatLng([latitude, longitude]);
+                        }
+
+                        if (map) {
+                            map.setView([latitude, longitude], 15, { animate: true });
+                        }
+
+                        // Reverse Geocoding to get address name
+                        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.display_name && startInput) {
+                                    startInput.value = data.display_name;
+                                }
+                            })
+                            .catch(err => {
+                                console.error("Reverse geocoding failed:", err);
+                                if (startInput) {
+                                    startInput.value = `Location: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+                                }
+                            });
+
+                        const endInput = document.getElementById('endInput');
+                        if (endInput) {
+                            endInput.focus();
+                        }
+                    },
+                    (error) => {
+                        console.error('Geolocation Error:', error);
+                        const startInput = document.getElementById('startInput');
+                        
+                        let errorMsg = "Location unavailable";
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMsg = "Location permission denied";
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMsg = "Location unavailable";
+                                break;
+                            case error.TIMEOUT:
+                                errorMsg = "Location timeout";
+                                break;
+                        }
+                        
+                        if (startInput) startInput.value = errorMsg;
+                        alert(`Could not get your location: ${errorMsg}. Please check browser permissions or enter manually.`);
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,  // Increased to 10 seconds
+                        maximumAge: 0    // Don't use cached location
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        // --- OSRM API Helper ---
+        async function getOSRMRoute(waypoints) {
+            // waypoints is array of [lng, lat]
+            const coordsString = waypoints.map(pt => `${pt[0]},${pt[1]}`).join(';');
+            // Request 'steps=true' and 'annotations=true' to get detailed leg breakdown if needed
+            const url = `https://router.project-osrm.org/route/v1/driving/${coordsString}?overview=full&geometries=geojson&steps=true`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.code === 'Ok') {
+                    return data.routes[0];
+                }
+                throw new Error(data.code);
+            } catch (err) {
+                console.error("OSRM Fetch Error:", err);
+                return null;
+            }
+        }
+
+        // Simple point-to-segment distance (no corrections)
+        function pointToSegmentDistance(px, py, x1, y1, x2, y2) {
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+            const lengthSquared = dx * dx + dy * dy;
+            
+            let t = 0;
+            if (lengthSquared > 0) {
+                t = ((px - x1) * dx + (py - y1) * dy) / lengthSquared;
+                t = Math.max(0, Math.min(1, t));
+            }
+            
+            const closestX = x1 + t * dx;
+            const closestY = y1 + t * dy;
+            
+            const distX = px - closestX;
+            const distY = py - closestY;
+            
+            return {
+                dist: Math.sqrt(distX * distX + distY * distY),
+                closestX: closestX,
+                closestY: closestY,
+                t: t
+            };
+        }
+
+        // --- Simplified Route Solver with Multiple Detour Attempts ---
+        async function solveSafeRoute(start, end, obstacles, detectionRadius = 0.0015) {
+            if (obstacles.length === 0) {
+                return { route: await getOSRMRoute([start, end]), waypoints: [start, end] };
+            }
+
+            // First check if direct route has collisions
+            const directRoute = await getOSRMRoute([start, end]);
+            let directCollisions = 0;
+            if (directRoute && directRoute.legs) {
+                for (const leg of directRoute.legs) {
+                    if (findCollisionInLeg(leg, obstacles, detectionRadius)) {
+                        directCollisions++;
+                    }
+                }
+            }
+            
+            if (directCollisions === 0) {
+                return { route: directRoute, waypoints: [start, end] };
+            }
+
+            // Try multiple detour strategies with larger offsets
+            const strategies = [
+                // Cardinal directions - 3km
+                { offsetLat: 0.03, offsetLng: 0 },       // North
+                { offsetLat: -0.03, offsetLng: 0 },      // South
+                { offsetLat: 0, offsetLng: 0.03 },       // East
+                { offsetLat: 0, offsetLng: -0.03 },      // West
+                
+                // Diagonals - 2.5km
+                { offsetLat: 0.025, offsetLng: 0.025 },  // NE
+                { offsetLat: -0.025, offsetLng: -0.025 },// SW
+                { offsetLat: 0.025, offsetLng: -0.025 }, // SE
+                { offsetLat: -0.025, offsetLng: 0.025 }, // NW
+                
+                // Medium range - 2km
+                { offsetLat: 0.02, offsetLng: 0 },       
+                { offsetLat: -0.02, offsetLng: 0 },      
+                { offsetLat: 0, offsetLng: 0.02 },       
+                { offsetLat: 0, offsetLng: -0.02 }
+            ];
+
+            let bestRoute = directRoute;
+            let bestWaypoints = [start, end];
+            let minCollisions = directCollisions;
+            let shortestDistance = directRoute ? directRoute.distance : Infinity;
+
+            // Try each strategy and find the shortest collision-free route
+            for (let i = 0; i < strategies.length; i++) {
+                const strategy = strategies[i];
+                const midLat = (start[1] + end[1]) / 2;
+                const midLng = (start[0] + end[0]) / 2;
+                
+                const detourPoint = [
+                    midLng + strategy.offsetLng,
+                    midLat + strategy.offsetLat
+                ];
+
+                const testWaypoints = [start, detourPoint, end];
+                const routeData = await getOSRMRoute(testWaypoints);
+                
+                if (!routeData || !routeData.legs) continue;
+
+                // Count collisions
+                let collisionCount = 0;
+                for (const leg of routeData.legs) {
+                    if (findCollisionInLeg(leg, obstacles, detectionRadius)) {
+                        collisionCount++;
+                    }
+                }
+
+                // Prioritize: 1) Fewer collisions, 2) Shorter distance
+                const isBetterRoute = 
+                    collisionCount < minCollisions || 
+                    (collisionCount === minCollisions && routeData.distance < shortestDistance);
+
+                if (isBetterRoute) {
+                    minCollisions = collisionCount;
+                    bestRoute = routeData;
+                    bestWaypoints = testWaypoints;
+                    shortestDistance = routeData.distance;
+                }
+            }
+            
+            if (minCollisions === 0) {
+                console.log("✓ Found safe route avoiding all", obstacles.length, "obstacles -", Math.round(shortestDistance / 1000), "km");
+            } else {
+                console.warn("Could not find collision-free route. Best route has", minCollisions, "collisions");
+            }
+
+            return { route: bestRoute, waypoints: bestWaypoints };
+        }
+
+        function findCollisionInLeg(leg, obstacles, radius) {
+            if (!leg.steps) return null;
+
+            for (const step of leg.steps) {
+                if (!step.geometry || !step.geometry.coordinates) continue;
+
+                const coords = step.geometry.coordinates;
+                for (let i = 0; i < coords.length - 1; i++) {
+                    const p1 = coords[i];
+                    const p2 = coords[i + 1];
+
+                    for (const obstacle of obstacles) {
+                        const result = pointToSegmentDistance(obstacle[0], obstacle[1], p1[0], p1[1], p2[0], p2[1]);
+                        
+                        if (result.dist < radius) {
+                            return {
+                                obstacle: obstacle,
+                                roadPoint: [result.closestX, result.closestY],
+                                roadSegment: [p1, p2],
+                                t: result.t
+                            };
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        function initMap() {
+            // Leaflet uses [Lat, Lng], so flip coords for view
+            const mapCenter = [30.7333, 76.7794];
+
+            map = L.map('map').setView(mapCenter, 13);
+
+            // Add OpenStreetMap Tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Layer Groups
+            noiseLayer = L.layerGroup().addTo(map);
+            constructionLayer = L.layerGroup().addTo(map);
+            routeLayer = L.layerGroup().addTo(map);
+
+            // Custom Icons
+            const startIcon = L.divIcon({
+                className: 'custom-icon', // no-op class
+                html: `<div style="background-color:#0EA5A2;width:16px;height:16px;border-radius:50%;border:3px solid white;box-shadow:0 2px 5px rgba(0,0,0,0.3);"></div>`,
+                iconSize: [16, 16],
+                iconAnchor: [8, 8]
+            });
+
+            const endIcon = L.divIcon({
+                className: 'custom-icon',
+                html: `<div style="background-color:#214141;width:24px;height:24px;border-radius:50%;border:3px solid white;box-shadow:0 2px 5px rgba(0,0,0,0.3);display:flex;justify-content:center;align-items:center;"><i class='fa-solid fa-flag-checkered' style='color:white;font-size:12px;'></i></div>`,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+
+            // Add initial markers
+            startMarker = L.marker([startCoords[1], startCoords[0]], { icon: startIcon }).addTo(map);
+            endMarker = L.marker([endCoords[1], endCoords[0]], { icon: endIcon }).addTo(map);
+
+            addNoiseZones();
+            addConstructionZones();
+            addCrowdZones();
+        }
+
+        // Global Zones (stored as [Lng, Lat] for consistency with existing math)
+        let globalNoiseZones = [
+            [76.79, 30.745], [76.77, 30.735], [76.81, 30.76]
+        ];
+        let globalConstructionZones = [
+            [76.82, 30.75], [76.75, 30.73]
+        ];
+        let globalCrowdZones = [
+            [76.795, 30.755], [76.785, 30.74]
+        ];
+
+        function addNoiseZones() {
+            globalNoiseZones.forEach(zone => {
+                // Leaflet Circle takes [Lat, Lng], radius in meters
+                L.circle([zone[1], zone[0]], {
+                    color: '#F97316',
+                    fillColor: '#F97316',
+                    fillOpacity: 0.2,
+                    radius: 150, // Smaller radius for better visibility
+                    stroke: true,
+                    weight: 2
+                }).addTo(noiseLayer);
+            });
+        }
+
+        function addConstructionZones() {
+            globalConstructionZones.forEach(zone => {
+                L.circle([zone[1], zone[0]], {
+                    color: '#1E40AF',
+                    fillColor: '#3B82F6',
+                    fillOpacity: 0.2,
+                    radius: 400,
+                    weight: 2
+                }).addTo(constructionLayer);
+            });
+        }
+
+        function addCrowdZones() {
+            globalCrowdZones.forEach(zone => {
+                L.circle([zone[1], zone[0]], {
+                    color: '#F97316',
+                    fillColor: '#FFA500',
+                    fillOpacity: 0.12,
+                    radius: 250,
+                    weight: 1,
+                    dashArray: '3, 3'
+                }).addTo(noiseLayer);
+            });
+        }
+
+        function setupAutocomplete() {
+            const startInput = document.getElementById('startInput');
+            const endInput = document.getElementById('endInput');
+            const startSuggestions = document.getElementById('startSuggestions');
+            const endSuggestions = document.getElementById('endSuggestions');
+            const locateMeBtn = document.getElementById('locateMeBtn');
+
+            // Debounce function
+            const debounce = (func, wait) => {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            };
+
+            const handleInput = debounce((e, suggestionsDiv, isStart) => {
+                if (e.target.value.length > 2) {
+                    fetchSuggestions(e.target.value, suggestionsDiv, e.target, isStart);
+                } else {
+                    suggestionsDiv.classList.add('hidden');
+                }
+            }, 500);
+
+            startInput.addEventListener('input', (e) => handleInput(e, startSuggestions, true));
+            endInput.addEventListener('input', (e) => handleInput(e, endSuggestions, false));
+
+            // Locate Me Button Logic
+            locateMeBtn.addEventListener('click', () => {
+                const icon = locateMeBtn.querySelector('i');
+                icon.classList.add('fa-spin');
+                startInput.value = "Locating...";
+
+                getUserLocation();
+
+                // Reset icon after a short delay or when location found (handled in getUserLocation typically)
+                // For now, simple timeout fallback
+                setTimeout(() => icon.classList.remove('fa-spin'), 3000);
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.relative')) {
+                    startSuggestions.classList.add('hidden');
+                    endSuggestions.classList.add('hidden');
+                }
+            });
+        }
+
+        async function fetchSuggestions(query, suggestionsDiv, inputElement, isStart) {
+            try {
+                const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`;
+                const response = await fetch(url);
+                const results = await response.json();
+
+                suggestionsDiv.innerHTML = '';
+
+                if (results.length === 0) {
+                    suggestionsDiv.classList.add('hidden');
+                    return;
+                }
+
+                results.forEach(result => {
+                    const div = document.createElement('div');
+                    div.className = 'px-4 py-2 hover:bg-harbor-50 cursor-pointer border-b text-sm text-gray-700 truncate';
+                    div.innerHTML = `<i class="fa-solid fa-location-dot text-harbor-500 mr-2"></i>${result.display_name}`;
+                    div.addEventListener('click', () => {
+                        inputElement.value = result.display_name;
+                        suggestionsDiv.classList.add('hidden');
+
+                        const lat = parseFloat(result.lat);
+                        const lon = parseFloat(result.lon);
+
+                        if (isStart) {
+                            startCoords = [lon, lat];
+                            if (startMarker) startMarker.setLatLng([lat, lon]);
+                            if (map) map.flyTo([lat, lon], 14);
+                        } else {
+                            endCoords = [lon, lat];
+                            if (endMarker) endMarker.setLatLng([lat, lon]);
+                            if (map) map.fitBounds(L.latLngBounds([startCoords[1], startCoords[0]], [lat, lon]), { padding: [50, 50] });
+                        }
+                    });
+                    suggestionsDiv.appendChild(div);
+                });
+
+                suggestionsDiv.classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Geocoding error:", error);
+            }
+        }
+
+
+
+        async function getOSRMRoute(waypoints) {
+            const coordsString = waypoints.map(pt => `${pt[0]},${pt[1]}`).join(';');
+            // steps=true is CRITICAL for leg-based collision detection
+            const url = `https://router.project-osrm.org/route/v1/driving/${coordsString}?overview=full&geometries=geojson&steps=true`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.code === 'Ok') {
+                    return data.routes[0];
+                }
+                throw new Error(data.code);
+            } catch (err) {
+                console.error("OSRM Fetch Error:", err);
+                return null;
+            }
+        }
+
+        // --- Detour Logic ---
+
+        async function calculateAndDisplayRoute(isDemo = false) {
+            const btn = document.getElementById('findRouteBtn');
+            const btnText = btn.querySelector('span');
+            const btnIcon = btn.querySelector('i');
+            const alert = document.getElementById('gentleAlert');
+            const stats = document.getElementById('routeStats');
+            const toggleConst = document.getElementById('toggle-const');
+
+            if (isCalculating) return;
+            if (!isDemo && btn.disabled) return;
+
+            const originalText = "Suggest Comfortable Route";
+
+            try {
+                isCalculating = true;
+                
+                console.log("🚗 Starting route calculation...");
+
+                if (!isDemo) {
+                    btn.disabled = true;
+                    btnText.innerText = "Calculating Safe Route...";
+                    btnIcon.classList.add("loader");
+                    btnIcon.classList.remove("fa-solid", "fa-wand-magic-sparkles", "group-hover:rotate-12", "transition-transform");
+                }
+
+                if (!routeLayer) {
+                    console.error("Map not ready");
+                    return;
+                }
+
+                routeLayer.clearLayers();
+
+                // Collect Obstacles based on UI toggles
+                const toggleCrowds = document.getElementById('toggle-crowds');
+                const avoidCrowds = toggleCrowds ? toggleCrowds.checked : false;
+                const avoidConstruction = toggleConst ? toggleConst.checked : false;
+                
+                let obstacles = [...globalNoiseZones];
+                if (avoidCrowds) {
+                    obstacles = [...obstacles, ...globalCrowdZones];
+                }
+                if (avoidConstruction) {
+                    obstacles = [...obstacles, ...globalConstructionZones];
+                }
+                
+                console.log("📍 Total obstacles:", obstacles.length);
+                
+                // Get noise tolerance from slider (affects detection radius)
+                const noiseSlider = document.getElementById('noiseSlider');
+                const noiseTolerance = noiseSlider ? parseInt(noiseSlider.value) : 20;
+                // Lower tolerance = larger detection radius (more sensitive)
+                // Scale from 0.001 (100m - high sensitivity) to 0.002 (200m - low sensitivity)
+                const detectionRadius = 0.001 + (noiseTolerance / 100) * 0.001;
+
+                // 1. Fetch Standard Route (Direct)
+                const standardRouteData = await getOSRMRoute([startCoords, endCoords]);
+
+                // 2. Fetch Safe Route (Iterative Solver)
+                const safeRouteResult = await solveSafeRoute(startCoords, endCoords, obstacles, detectionRadius);
+                const safeRouteData = safeRouteResult ? safeRouteResult.route : null;
+                const usedWaypoints = safeRouteResult ? safeRouteResult.waypoints : [];
+
+                // Draw Routes
+                if (standardRouteData) {
+                    L.geoJSON(standardRouteData.geometry, {
+                        style: {
+                            color: '#9CA3AF',
+                            weight: 3,
+                            dashArray: '5, 8',
+                            opacity: 0.5
+                        }
+                    }).addTo(routeLayer);
+                }
+
+                if (safeRouteData) {
+                    const safePoly = L.geoJSON(safeRouteData.geometry, {
+                        style: {
+                            color: '#0EA5A2',
+                            weight: 7,
+                            opacity: 1,
+                            lineJoin: 'round'
+                        }
+                    }).addTo(routeLayer);
+
+                    // Fit to safe route
+                    if (map && !isDemo) { 
+                        map.fitBounds(safePoly.getBounds(), { padding: [50, 50] });
+                    }
+
+                    // Update Stats
+                    if (stats) {
+                        const dist = (safeRouteData.distance / 1000).toFixed(1);
+                        const dur = Math.round(safeRouteData.duration / 60);
+                        document.getElementById('routeDistance').textContent = `${dist} km Harbor Route (${dur} min)`;
+                        document.getElementById('quietness').textContent = 'Verified Quiet Path';
+                        stats.classList.remove('hidden');
+                    }
+
+                    const detourCount = usedWaypoints.length - 2;
+                    const alertText = document.getElementById('alertText');
+                    if (alertText) {
+                        if (detourCount > 0) {
+                            alertText.textContent = `Re-routed to avoid ${detourCount} noise zones.`;
+                        } else {
+                            alertText.textContent = 'Direct path is safe.';
+                        }
+                    }
+                } else {
+                    console.warn("Could not calculate safe route.");
+                }
+
+                if (alert && !isDemo) {
+                    alert.classList.remove('hidden');
+                    alert.style.opacity = '1';
+                    setTimeout(() => {
+                        alert.style.opacity = '0';
+                        setTimeout(() => alert.classList.add('hidden'), 500);
+                    }, 4000);
+                }
+
+            } catch (err) {
+                console.error("Error calculating route:", err);
+            } finally {
+                isCalculating = false;
+                resetBtn();
+            }
+
+            function resetBtn() {
+                if(btn) {
+                    btn.disabled = false;
+                    btnText.innerText = originalText;
+                    btnIcon.className = "fa-solid fa-wand-magic-sparkles group-hover:rotate-12 transition-transform";
+                }
+            }
+        }
+
+        function initControls() {
+            const btn = document.getElementById('findRouteBtn');
+            const btnText = btn.querySelector('span');
+            const btnIcon = btn.querySelector('i');
+            const alert = document.getElementById('gentleAlert');
+            const stats = document.getElementById('routeStats');
+            const noiseSlider = document.getElementById('noiseSlider');
+            const noiseValue = document.getElementById('noiseValue');
+            const toggleCrowds = document.getElementById('toggle-crowds');
+            const toggleConst = document.getElementById('toggle-const');
+
+            noiseSlider.addEventListener('input', (e) => {
+                const value = e.target.value;
+                const labels = ['Silent', 'Quiet Priority', 'Moderate', 'Lively OK'];
+                const index = Math.min(Math.floor(value / 25), 3);
+                noiseValue.textContent = labels[index];
+            });
+
+            btn.addEventListener('click', () => calculateAndDisplayRoute(false));
+
+            // --- Demo: Clear Zones ---
+            const clearZonesBtn = document.getElementById('clearZonesBtn');
+            if (clearZonesBtn) {
+                clearZonesBtn.addEventListener('click', () => {
+                    globalNoiseZones = [];
+                    globalConstructionZones = [];
+                    if (noiseLayer) noiseLayer.clearLayers();
+                    if (constructionLayer) constructionLayer.clearLayers();
+                    if (routeLayer) routeLayer.clearLayers();
+                    
+                    // Reset to standard route
+                    calculateAndDisplayRoute(true);
+                });
+            }
+
+            // --- Demo: Add Noise Mode ---
+            const addNoiseBtn = document.getElementById('addNoiseBtn');
+            const demoHint = document.getElementById('demoModeHint');
+            let isAddingNoise = false;
+
+            addNoiseBtn.addEventListener('click', () => {
+                isAddingNoise = !isAddingNoise;
+                if (isAddingNoise) {
+                    addNoiseBtn.classList.replace('bg-gray-100', 'bg-orange-100');
+                    addNoiseBtn.classList.replace('text-gray-700', 'text-orange-700');
+                    demoHint.classList.remove('hidden');
+                    document.getElementById('map').style.cursor = 'crosshair';
+                } else {
+                    addNoiseBtn.classList.replace('bg-orange-100', 'bg-gray-100');
+                    addNoiseBtn.classList.replace('text-orange-700', 'text-gray-700');
+                    demoHint.classList.add('hidden');
+                    document.getElementById('map').style.cursor = '';
+                }
+            });
+
+            map.on('click', async (e) => {
+                if (!isAddingNoise || isCalculating) return;
+
+                const { lat, lng } = e.latlng;
+                const coords = [lng, lat]; // Store internally as Lng, Lat
+
+                // 1. Add to global zones
+                globalNoiseZones.push(coords);
+
+                // 2. Visually add to map
+                L.circle([lat, lng], {
+                    color: '#F97316',
+                    fillColor: '#F97316',
+                    fillOpacity: 0.15,
+                    radius: 300,
+                    stroke: false
+                }).addTo(noiseLayer);
+
+                // 3. Trigger recalculation logic DIRECTLY
+                isCalculating = true;
+                try {
+                    await calculateAndDisplayRoute(true);
+                    
+                    // Override alert text for user feedback
+                    const alertEl = document.getElementById('alertText');
+                    if (alertEl) alertEl.textContent = 'Route updated due to sudden noise!';
+                } finally {
+                    isCalculating = false;
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>

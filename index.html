@@ -1,49 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Harbor Navigation</title>
-  <meta name="description" content="Harbor Navigation helps people with autism and sensory sensitivities find quiet, comfortable routes in cities using AI and community reports." />
+  <meta name="description"
+    content="Harbor Navigation helps people with autism and sensory sensitivities find quiet, comfortable routes in cities using AI and community reports." />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap"
+    rel="stylesheet">
+
+  <!-- EmailJS SDK -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function () {
+      // Initialize EmailJS with placeholder key - User to replace 'YOUR_PUBLIC_KEY'
+      emailjs.init("YOUR_PUBLIC_KEY");
+    })();
+  </script>
   <!-- Azure Maps Web SDK -->
   <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.css" />
   <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.js"></script>
- 
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback & Testimonials</title>
 
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
 
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="logo" href="#home" aria-label="Harbor Navigation home">
-        <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="10" fill="#0EA5A2"></circle>
-          <path d="M12 7l4 10-4-3-4 3 4-10z" fill="#FFFFFF"></path>
-        </svg>
-        <span class="brand-name">Harbor</span>
-      </a>
-
-      <button class="nav-toggle" aria-controls="primary-nav" aria-expanded="false">
-        <span class="nav-toggle__bars" aria-hidden="true"></span>
-        <span class="sr-only">Toggle navigation</span>
-      </button>
-
-      <nav id="primary-nav" class="site-nav" aria-label="Primary">
-        <ul class="nav-list">
-          <li><a href="#home">Home</a></li>
-          <li><a href="#problem">Problem</a></li>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#demo">Demo</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-        <a class="btn btn--primary btn--sm" href="#demo">Try the App</a>
-      </nav>
-    </div>
-  </header>
+  <div id="site-header-placeholder"></div>
 
   <main id="main">
     <!-- Hero -->
@@ -55,7 +46,7 @@
             AI-guided paths that reduce sensory overload—favoring quiet streets, parks, and calming spaces.
           </p>
           <div class="hero-actions">
-            <a class="btn btn--primary btn--lg" href="#demo">Try the App</a>
+            <a class="btn btn--primary btn--lg" href="harbor.html">Try the App</a>
             <a class="btn btn--ghost btn--lg" href="#features">Explore Features</a>
           </div>
 
@@ -76,8 +67,10 @@
           <div class="stage">
             <figure class="card card--map hero-map reveal" aria-describedby="map-desc">
               <div id="azureMap" role="img" aria-labelledby="map-title map-desc"></div>
-              <div id="map-title" class="sr-only">City map showing quiet and noisy areas with suggested comfortable routes</div>
-              <div id="map-desc" class="sr-only">Green heat indicates quiet zones; red heat indicates noisy zones. A comfort-aware route avoids high-noise areas.</div>
+              <div id="map-title" class="sr-only">City map showing quiet and noisy areas with suggested comfortable
+                routes</div>
+              <div id="map-desc" class="sr-only">Green heat indicates quiet zones; red heat indicates noisy zones. A
+                comfort-aware route avoids high-noise areas.</div>
             </figure>
           </div>
         </div>
@@ -88,7 +81,8 @@
     <section id="comparison" class="section" aria-labelledby="comparison-title">
       <div class="container reveal">
         <h2 id="comparison-title">Why choose Harbor?</h2>
-        <p class="section-intro">A quick comparison to help you choose a navigation tool that prioritizes sensory comfort.</p>
+        <p class="section-intro">A quick comparison to help you choose a navigation tool that prioritizes sensory
+          comfort.</p>
         <div class="grid grid--2 comparison-grid">
           <div class="problem-card reveal comparison-card">
             <h3>Harbor — designed for comfort</h3>
@@ -136,7 +130,8 @@
           </div>
           <div class="problem-card">
             <h3>What current apps miss</h3>
-            <p>Most navigation apps only show the fastest or shortest route. They don’t tell you which path is quiet, less crowded, or sensory-friendly.</p>
+            <p>Most navigation apps only show the fastest or shortest route. They don’t tell you which path is quiet,
+              less crowded, or sensory-friendly.</p>
           </div>
         </div>
       </div>
@@ -150,7 +145,9 @@
         <div class="grid grid--4">
           <article class="feature-card reveal">
             <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="28" height="28"><path d="M4 4h16v4H4zM4 10h10v4H4zM4 16h7v4H4z" fill="#0EA5A2"></path></svg>
+              <svg viewBox="0 0 24 24" width="28" height="28">
+                <path d="M4 4h16v4H4zM4 10h10v4H4zM4 16h7v4H4z" fill="#0EA5A2"></path>
+              </svg>
             </div>
             <h3 class="feature-title">Real-time reports</h3>
             <p class="feature-text">Community updates on noise, crowding, lighting, and construction.</p>
@@ -158,7 +155,10 @@
 
           <article class="feature-card reveal">
             <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="28" height="28"><circle cx="12" cy="12" r="8" fill="#3B82F6" opacity="0.25"></circle><path d="M8 12h8M12 8v8" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"></path></svg>
+              <svg viewBox="0 0 24 24" width="28" height="28">
+                <circle cx="12" cy="12" r="8" fill="#3B82F6" opacity="0.25"></circle>
+                <path d="M8 12h8M12 8v8" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"></path>
+              </svg>
             </div>
             <h3 class="feature-title">AI predictions</h3>
             <p class="feature-text">Forecasts comfort levels by time and location to plan ahead.</p>
@@ -166,7 +166,12 @@
 
           <article class="feature-card reveal">
             <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="28" height="28"><path d="M5 19c6-2 8-5 9-9l5 2" stroke="#22C55E" stroke-width="2" fill="none" stroke-linecap="round"></path><circle cx="5" cy="19" r="2" fill="#22C55E"></circle><circle cx="19" cy="12" r="2" fill="#22C55E"></circle></svg>
+              <svg viewBox="0 0 24 24" width="28" height="28">
+                <path d="M5 19c6-2 8-5 9-9l5 2" stroke="#22C55E" stroke-width="2" fill="none" stroke-linecap="round">
+                </path>
+                <circle cx="5" cy="19" r="2" fill="#22C55E"></circle>
+                <circle cx="19" cy="12" r="2" fill="#22C55E"></circle>
+              </svg>
             </div>
             <h3 class="feature-title">Sensory-friendly routes</h3>
             <p class="feature-text">Paths that favor quiet streets, parks, and low-stimulus areas.</p>
@@ -174,7 +179,10 @@
 
           <article class="feature-card reveal">
             <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="28" height="28"><path d="M12 3l9 16H3L12 3z" fill="#EF4444" opacity="0.25"></path><path d="M12 10v4" stroke="#EF4444" stroke-width="2" stroke-linecap="round"></path></svg>
+              <svg viewBox="0 0 24 24" width="28" height="28">
+                <path d="M12 3l9 16H3L12 3z" fill="#EF4444" opacity="0.25"></path>
+                <path d="M12 10v4" stroke="#EF4444" stroke-width="2" stroke-linecap="round"></path>
+              </svg>
             </div>
             <h3 class="feature-title">Gentle alerts</h3>
             <p class="feature-text">Notifications when nearby conditions change—no loud sounds.</p>
@@ -182,6 +190,8 @@
         </div>
       </div>
     </section>
+    <!-- new ui for map -->
+
 
     <!-- Demo -->
     <section id="demo" class="section section--alt" aria-labelledby="demo-title">
@@ -243,43 +253,12 @@
         </form>
       </div>
     </section>
-  </main>
+    <!-- Feedback & Testimonials -->
 
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <div class="footer-brand">
-        <a class="logo" href="#home" aria-label="Harbor Navigation home">
-          <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="12" cy="12" r="10" fill="#0EA5A2"></circle>
-            <path d="M12 7l4 10-4-3-4 3 4-10z" fill="#FFFFFF"></path>
-          </svg>
-          <span class="brand-name">Harbor</span>
-        </a>
-        <p>Find routes that feel right for you.</p>
-      </div>
+    <div id="site-footer-placeholder"></div>
 
-      <nav aria-label="Footer">
-        <ul class="footer-list">
-          <li><a href="#problem">Problem</a></li>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#demo">Demo</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </nav>
-
-      <div class="footer-social" aria-label="Social media">
-        <a href="#" aria-label="Twitter"><span aria-hidden="true">𝕏</span></a>
-        <a href="#" aria-label="LinkedIn"><span aria-hidden="true">in</span></a>
-        <a href="#" aria-label="Instagram"><span aria-hidden="true">◎</span></a>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <small>&copy; <span id="year"></span> Harbor Navigation. All rights reserved.</small>
-    </div>
-  </footer>
-
-
-  <script src="script.js"></script>
+    <script src="layout.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>

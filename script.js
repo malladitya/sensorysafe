@@ -1,31 +1,31 @@
-// Update year
-document.getElementById('year').textContent = new Date().getFullYear();
+// Update year (Handled by layout.js)
+// document.getElementById('year').textContent = new Date().getFullYear();
 
-// Mobile nav toggle with ARIA
-const navToggle = document.querySelector('.nav-toggle');
-const nav = document.getElementById('primary-nav');
-if (navToggle && nav) {
-  navToggle.addEventListener('click', () => {
-    const expanded = nav.getAttribute('aria-expanded') === 'true';
-    nav.setAttribute('aria-expanded', String(!expanded));
-    navToggle.setAttribute('aria-expanded', String(!expanded));
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      nav.setAttribute('aria-expanded', 'false');
-      navToggle.setAttribute('aria-expanded', 'false');
-    }
-  });
-}
+// Mobile nav toggle with ARIA (Handled by layout.js)
+// const navToggle = document.querySelector('.nav-toggle');
+// const nav = document.getElementById('primary-nav');
+// if (navToggle && nav) {
+//   navToggle.addEventListener('click', () => {
+//     const expanded = nav.getAttribute('aria-expanded') === 'true';
+//     nav.setAttribute('aria-expanded', String(!expanded));
+//     navToggle.setAttribute('aria-expanded', String(!expanded));
+//   });
+//   document.addEventListener('keydown', (e) => {
+//     if (e.key === 'Escape') {
+//       nav.setAttribute('aria-expanded', 'false');
+//       navToggle.setAttribute('aria-expanded', 'false');
+//     }
+//   });
+// }
 
-// Skip link focus
-const skipLink = document.querySelector('.skip-link');
-if (skipLink) {
-  skipLink.addEventListener('click', () => {
-    const target = document.querySelector(skipLink.getAttribute('href'));
-    if (target) target.setAttribute('tabindex', '-1'), target.focus();
-  });
-}
+// Skip link focus (Handled by layout.js)
+// const skipLink = document.querySelector('.skip-link');
+// if (skipLink) {
+//   skipLink.addEventListener('click', () => {
+//     const target = document.querySelector(skipLink.getAttribute('href'));
+//     if (target) target.setAttribute('tabindex', '-1'), target.focus();
+//   });
+// }
 
 // Reveal on scroll (IntersectionObserver)
 const reveals = document.querySelectorAll('.reveal');
@@ -233,6 +233,9 @@ function suggestComfortRoute() {
     comfortBtn.disabled = false;
   }, 800);
 }
+//FEDBACK
+//header footer to every psage 
+
 
 // Initialize map after SDK loads
 if (window.atlas) {
@@ -245,3 +248,39 @@ if (window.atlas) {
 if (comfortBtn) {
   comfortBtn.addEventListener('click', suggestComfortRoute);
 }
+
+// Contact Form Handling (EmailJS)
+document.addEventListener('DOMContentLoaded', () => {
+  const contactForm = document.querySelector('#contact form');
+
+  if (contactForm) {
+    contactForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const submitBtn = this.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerText;
+
+      // Set loading state
+      submitBtn.innerText = 'Sending...';
+      submitBtn.disabled = true;
+
+      // Prepare params
+      const serviceID = 'YOUR_SERVICE_ID'; // User to replace
+      const templateID = 'YOUR_TEMPLATE_ID'; // User to replace
+
+      // Send via EmailJS (sendForm automatically captures input values by name attribute)
+      emailjs.sendForm(serviceID, templateID, this)
+        .then(() => {
+          alert('Message sent successfully!');
+          this.reset();
+        }, (err) => {
+          alert('Failed to send message. Please try again later.'); // Will trigger until keys are valid
+          console.error('EmailJS Error:', err);
+        })
+        .finally(() => {
+          submitBtn.innerText = originalText;
+          submitBtn.disabled = false;
+        });
+    });
+  }
+});
