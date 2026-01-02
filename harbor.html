@@ -435,7 +435,61 @@
             setupAutocomplete();
             // Don't auto-locate on page load - let user click "Locate Me" button
             // getUserLocation();
+
+            // Handle URL parameters for redirected routes
+            handleUrlParameters();
         });
+
+        async function handleUrlParameters() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const startParam = urlParams.get('start');
+            const endParam = urlParams.get('end');
+
+            if (startParam || endParam) {
+                const startInput = document.getElementById('startInput');
+                const endInput = document.getElementById('endInput');
+
+                if (startParam && startInput) {
+                    startInput.value = startParam;
+                    // Trigger geocode for start
+                    const startResult = await fetchGeocode(startParam);
+                    if (startResult) {
+                        startCoords = [parseFloat(startResult.lon), parseFloat(startResult.lat)];
+                        if (startMarker) startMarker.setLatLng([startResult.lat, startResult.lon]);
+                    }
+                }
+
+                if (endParam && endInput) {
+                    endInput.value = endParam;
+                    // Trigger geocode for end
+                    const endResult = await fetchGeocode(endParam);
+                    if (endResult) {
+                        endCoords = [parseFloat(endResult.lon), parseFloat(endResult.lat)];
+                        if (endMarker) endMarker.setLatLng([endResult.lat, endResult.lon]);
+                    }
+                }
+
+                // If both are found, calculate route
+                if (startCoords && endCoords) {
+                    if (map) {
+                        map.fitBounds(L.latLngBounds([startCoords[1], startCoords[0]], [endCoords[1], endCoords[0]]), { padding: [50, 50] });
+                    }
+                    setTimeout(() => calculateAndDisplayRoute(false), 1000);
+                }
+            }
+        }
+
+        async function fetchGeocode(query) {
+            try {
+                const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`;
+                const response = await fetch(url);
+                const results = await response.json();
+                return results.length > 0 ? results[0] : null;
+            } catch (error) {
+                console.error("Geocoding fetch error:", error);
+                return null;
+            }
+        }
 
         function getUserLocation() {
             if (navigator.geolocation) {
@@ -483,9 +537,9 @@
                     (error) => {
                         console.error('Geolocation Error:', error);
                         const startInput = document.getElementById('startInput');
-                        
+
                         let errorMsg = "Location unavailable";
-                        switch(error.code) {
+                        switch (error.code) {
                             case error.PERMISSION_DENIED:
                                 errorMsg = "Location permission denied";
                                 break;
@@ -496,7 +550,7 @@
                                 errorMsg = "Location timeout";
                                 break;
                         }
-                        
+
                         if (startInput) startInput.value = errorMsg;
                         alert(`Could not get your location: ${errorMsg}. Please check browser permissions or enter manually.`);
                     },
@@ -536,19 +590,19 @@
             const dx = x2 - x1;
             const dy = y2 - y1;
             const lengthSquared = dx * dx + dy * dy;
-            
+
             let t = 0;
             if (lengthSquared > 0) {
                 t = ((px - x1) * dx + (py - y1) * dy) / lengthSquared;
                 t = Math.max(0, Math.min(1, t));
             }
-            
+
             const closestX = x1 + t * dx;
             const closestY = y1 + t * dy;
-            
+
             const distX = px - closestX;
             const distY = py - closestY;
-            
+
             return {
                 dist: Math.sqrt(distX * distX + distY * distY),
                 closestX: closestX,
@@ -573,7 +627,7 @@
                     }
                 }
             }
-            
+
             if (directCollisions === 0) {
                 return { route: directRoute, waypoints: [start, end] };
             }
@@ -585,17 +639,17 @@
                 { offsetLat: -0.03, offsetLng: 0 },      // South
                 { offsetLat: 0, offsetLng: 0.03 },       // East
                 { offsetLat: 0, offsetLng: -0.03 },      // West
-                
+
                 // Diagonals - 2.5km
                 { offsetLat: 0.025, offsetLng: 0.025 },  // NE
                 { offsetLat: -0.025, offsetLng: -0.025 },// SW
                 { offsetLat: 0.025, offsetLng: -0.025 }, // SE
                 { offsetLat: -0.025, offsetLng: 0.025 }, // NW
-                
+
                 // Medium range - 2km
-                { offsetLat: 0.02, offsetLng: 0 },       
-                { offsetLat: -0.02, offsetLng: 0 },      
-                { offsetLat: 0, offsetLng: 0.02 },       
+                { offsetLat: 0.02, offsetLng: 0 },
+                { offsetLat: -0.02, offsetLng: 0 },
+                { offsetLat: 0, offsetLng: 0.02 },
                 { offsetLat: 0, offsetLng: -0.02 }
             ];
 
@@ -609,7 +663,7 @@
                 const strategy = strategies[i];
                 const midLat = (start[1] + end[1]) / 2;
                 const midLng = (start[0] + end[0]) / 2;
-                
+
                 const detourPoint = [
                     midLng + strategy.offsetLng,
                     midLat + strategy.offsetLat
@@ -617,7 +671,7 @@
 
                 const testWaypoints = [start, detourPoint, end];
                 const routeData = await getOSRMRoute(testWaypoints);
-                
+
                 if (!routeData || !routeData.legs) continue;
 
                 // Count collisions
@@ -629,8 +683,8 @@
                 }
 
                 // Prioritize: 1) Fewer collisions, 2) Shorter distance
-                const isBetterRoute = 
-                    collisionCount < minCollisions || 
+                const isBetterRoute =
+                    collisionCount < minCollisions ||
                     (collisionCount === minCollisions && routeData.distance < shortestDistance);
 
                 if (isBetterRoute) {
@@ -640,7 +694,7 @@
                     shortestDistance = routeData.distance;
                 }
             }
-            
+
             if (minCollisions === 0) {
                 console.log("✓ Found safe route avoiding all", obstacles.length, "obstacles -", Math.round(shortestDistance / 1000), "km");
             } else {
@@ -663,7 +717,7 @@
 
                     for (const obstacle of obstacles) {
                         const result = pointToSegmentDistance(obstacle[0], obstacle[1], p1[0], p1[1], p2[0], p2[1]);
-                        
+
                         if (result.dist < radius) {
                             return {
                                 obstacle: obstacle,
@@ -901,7 +955,7 @@
 
             try {
                 isCalculating = true;
-                
+
                 console.log("🚗 Starting route calculation...");
 
                 if (!isDemo) {
@@ -922,7 +976,7 @@
                 const toggleCrowds = document.getElementById('toggle-crowds');
                 const avoidCrowds = toggleCrowds ? toggleCrowds.checked : false;
                 const avoidConstruction = toggleConst ? toggleConst.checked : false;
-                
+
                 let obstacles = [...globalNoiseZones];
                 if (avoidCrowds) {
                     obstacles = [...obstacles, ...globalCrowdZones];
@@ -930,9 +984,9 @@
                 if (avoidConstruction) {
                     obstacles = [...obstacles, ...globalConstructionZones];
                 }
-                
+
                 console.log("📍 Total obstacles:", obstacles.length);
-                
+
                 // Get noise tolerance from slider (affects detection radius)
                 const noiseSlider = document.getElementById('noiseSlider');
                 const noiseTolerance = noiseSlider ? parseInt(noiseSlider.value) : 20;
@@ -971,7 +1025,7 @@
                     }).addTo(routeLayer);
 
                     // Fit to safe route
-                    if (map && !isDemo) { 
+                    if (map && !isDemo) {
                         map.fitBounds(safePoly.getBounds(), { padding: [50, 50] });
                     }
 
@@ -1014,7 +1068,7 @@
             }
 
             function resetBtn() {
-                if(btn) {
+                if (btn) {
                     btn.disabled = false;
                     btnText.innerText = originalText;
                     btnIcon.className = "fa-solid fa-wand-magic-sparkles group-hover:rotate-12 transition-transform";
@@ -1051,7 +1105,7 @@
                     if (noiseLayer) noiseLayer.clearLayers();
                     if (constructionLayer) constructionLayer.clearLayers();
                     if (routeLayer) routeLayer.clearLayers();
-                    
+
                     // Reset to standard route
                     calculateAndDisplayRoute(true);
                 });
@@ -1099,7 +1153,7 @@
                 isCalculating = true;
                 try {
                     await calculateAndDisplayRoute(true);
-                    
+
                     // Override alert text for user feedback
                     const alertEl = document.getElementById('alertText');
                     if (alertEl) alertEl.textContent = 'Route updated due to sudden noise!';

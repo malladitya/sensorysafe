@@ -94,8 +94,6 @@ if ('IntersectionObserver' in window) {
 
 /* Azure Maps integration */
 let map, datasource, routeLayer;
-const statusEl = document.getElementById('demo-status');
-const comfortBtn = document.getElementById('comfortRouteBtn');
 
 function initMap() {
   map = new atlas.Map('azureMap', {
@@ -176,63 +174,60 @@ function initMap() {
   });
 }
 
-// Comfort-aware route (demo algorithm)
-// - Sample two candidate polylines: fastest-ish and quieter detour
-// - Compute a simple "noise penalty" by sampling nearby noisy points
-// - Choose route with lower combined cost: distance + noisePenalty
-function suggestComfortRoute() {
-  if (!map || !datasource) return;
-  statusEl.textContent = 'Analyzing routes for comfort...';
-  comfortBtn.disabled = true;
+// Function to plan and display comfortable route from external form data
+function planComfortableRoute(originCoords, destCoords) {
+  if (!map || !datasource) {
+    console.error('Map not initialized');
+    return;
+  }
 
-  // Parse inputs
-  const [olat, olon] = document.getElementById('origin').value.split(',').map((v) => parseFloat(v.trim()));
-  const [dlat, dlon] = document.getElementById('destination').value.split(',').map((v) => parseFloat(v.trim()));
-  const origin = [olon, olat];
-  const dest = [dlon, dlat];
+  // Clear existing routes and pins
+  datasource.clear();
 
-  // Candidate A: direct-ish path (straight segments)
-  const routeA = new atlas.data.LineString([origin, [(origin[0] + dest[0]) / 2, (origin[1] + dest[1]) / 2], dest]);
+  // Add new origin and destination pins
+  const origin = new atlas.data.Feature(new atlas.data.Point(originCoords), { name: 'Origin' });
+  const destination = new atlas.data.Feature(new atlas.data.Point(destCoords), { name: 'Destination' });
 
-  // Candidate B: detour via quieter zone (nudged north)
-  const mid = [(origin[0] + dest[0]) / 2, (origin[1] + dest[1]) / 2 + 0.02];
-  const routeB = new atlas.data.LineString([origin, mid, dest]);
+  // Create comfort-aware route avoiding noisy areas
+  const comfortRoute = generateComfortRoute(originCoords, destCoords);
 
-  // Simple noise sampling: higher penalty near noisy points (mock)
-  const noisySamples = [
+  datasource.add([origin, destination, new atlas.data.Feature(comfortRoute)]);
+
+  // Center map on the route
+  const bounds = atlas.data.BoundingBox.fromData([origin, destination]);
+  map.setCamera({ bounds: bounds, padding: 50 });
+}
+
+// Generate comfort-aware route that avoids noisy zones
+function generateComfortRoute(origin, dest) {
+  const noisyZones = [
     [77.445, 28.655], [77.455, 28.665], [77.480, 28.645], [77.500, 28.635]
   ];
 
-  function routeCost(line) {
-    const coords = line.coordinates;
-    let dist = 0;
-    for (let i = 1; i < coords.length; i++) {
-      dist += Math.hypot(coords[i][0] - coords[i - 1][0], coords[i][1] - coords[i - 1][1]);
-    }
-    // Noise penalty: sum of inverse distance to noisy points
-    let penalty = 0;
-    coords.forEach((c) => {
-      noisySamples.forEach((n) => {
-        const d = Math.hypot(c[0] - n[0], c[1] - n[1]);
-        penalty += 1 / Math.max(d, 0.0001);
-      });
-    });
-    return dist + penalty * 0.2;
+  // Calculate waypoints that avoid noisy areas
+  const midLat = (origin[1] + dest[1]) / 2;
+  const midLon = (origin[0] + dest[0]) / 2;
+
+  // Check if direct path passes through noisy zones
+  let needsDetour = false;
+  noisyZones.forEach(zone => {
+    const distToZone = Math.hypot(midLon - zone[0], midLat - zone[1]);
+    if (distToZone < 0.01) needsDetour = true;
+  });
+
+  if (needsDetour) {
+    // Create detour through quieter areas
+    const waypoint1 = [midLon - 0.01, midLat + 0.005];
+    const waypoint2 = [midLon + 0.005, midLat - 0.01];
+    return new atlas.data.LineString([origin, waypoint1, waypoint2, dest]);
+  } else {
+    // Direct route is safe
+    return new atlas.data.LineString([origin, dest]);
   }
-
-  const costA = routeCost(routeA);
-  const costB = routeCost(routeB);
-  const chosen = costB < costA ? routeB : routeA;
-
-  // Render chosen route
-  datasource.remove((f) => f.type === 'LineString');
-  datasource.add(new atlas.data.Feature(chosen));
-
-  setTimeout(() => {
-    statusEl.textContent = `Suggested route: ${costB < costA ? 'quieter detour' : 'direct path'} (comfort-aware)`;
-    comfortBtn.disabled = false;
-  }, 800);
 }
+
+// Expose function globally for external access
+window.planComfortableRoute = planComfortableRoute;
 //FEDBACK
 //header footer to every psage 
 
@@ -244,10 +239,104 @@ if (window.atlas) {
   console.error('Azure Maps SDK not loaded.');
 }
 
-// Demo button
-if (comfortBtn) {
-  comfortBtn.addEventListener('click', suggestComfortRoute);
-}
+// Add event listener for harbor.html route button
+document.addEventListener('DOMContentLoaded', () => {
+  const findRouteBtn = document.getElementById('findRouteBtn');
+  if (findRouteBtn) {
+    // Check if this is the harbor.html page (has the calculateAndDisplayRoute function)
+    if (typeof calculateAndDisplayRoute === 'function') {
+      // Use the existing harbor.html functionality
+      findRouteBtn.addEventListener('click', () => {
+        calculateAndDisplayRoute(false);
+      });
+    } else {
+      // Fallback for other pages
+      findRouteBtn.addEventListener('click', () => {
+        const originInput = document.getElementById('startInput');
+        const destInput = document.getElementById('endInput');
+
+        if (originInput && destInput) {
+          const origin = [77.4538, 28.6692];
+          const destination = [77.4316, 28.6384];
+
+          if (window.planComfortableRoute) {
+            window.planComfortableRoute(origin, destination);
+          }
+        }
+      });
+    }
+  }
+});
+
+// Geolocation and Redirection for index.html Demo
+document.addEventListener('DOMContentLoaded', () => {
+  const locateBtn = document.getElementById('locate-origin');
+  const originInput = document.getElementById('origin');
+  const destinationInput = document.getElementById('destination');
+  const findRouteBtn = document.querySelector('.demo-btn');
+
+  if (locateBtn && originInput) {
+    locateBtn.addEventListener('click', () => {
+      if (navigator.geolocation) {
+        const originalPlaceholder = originInput.placeholder;
+        originInput.value = '';
+        originInput.placeholder = 'Locating...';
+
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            originInput.value = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+            originInput.placeholder = originalPlaceholder;
+
+            // Try reverse geocoding with Nominatim (OSM)
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
+              .then(res => res.json())
+              .then(data => {
+                if (data.display_name) {
+                  originInput.value = data.display_name;
+                }
+              })
+              .catch(err => console.error('Reverse geocoding failed:', err));
+          },
+          (error) => {
+            console.error('Geolocation error:', error);
+            originInput.placeholder = originalPlaceholder;
+            alert('Could not get your location. Please enter it manually.');
+          }
+        );
+      } else {
+        alert('Geolocation is not supported by your browser.');
+      }
+    });
+  }
+
+  if (findRouteBtn) {
+    findRouteBtn.addEventListener('click', (e) => {
+      // Only handle redirection if we are on index.html and NOT harbor.html
+      const isHomePage = window.location.pathname.endsWith('index.html') ||
+        window.location.pathname === '/' ||
+        window.location.pathname.endsWith('sensorysafe/') ||
+        window.location.pathname === '';
+
+      if (isHomePage && originInput && destinationInput) {
+        const start = originInput.value;
+        const end = destinationInput.value;
+
+        if (start || end) {
+          const params = new URLSearchParams();
+          if (start) params.append('start', start);
+          if (end) params.append('end', end);
+
+          window.location.href = `harbor.html?${params.toString()}`;
+        } else {
+          window.location.href = 'harbor.html';
+        }
+      }
+    });
+  }
+});
+
+
 
 // Contact Form Handling (EmailJS)
 document.addEventListener('DOMContentLoaded', () => {

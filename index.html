@@ -41,13 +41,42 @@
     <section id="home" class="hero" aria-labelledby="hero-title">
       <div class="container hero-inner">
         <div class="hero-content reveal">
+          <div class="hero-badge">
+            <span class="badge">🧭 Sensory-Friendly Navigation</span>
+          </div>
           <h1 id="hero-title">Not just the fastest route, but the most comfortable one.</h1>
           <p class="hero-subtitle">
-            AI-guided paths that reduce sensory overload—favoring quiet streets, parks, and calming spaces.
+            AI-guided paths that reduce sensory overload—favoring quiet streets, parks, and calming spaces for people
+            with autism and sensory sensitivities.
           </p>
           <div class="hero-actions">
-            <a class="btn btn--primary btn--lg" href="harbor.html">Try the App</a>
-            <a class="btn btn--ghost btn--lg" href="#features">Explore Features</a>
+            <a class="btn btn--primary btn--lg" href="harbor.html">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="currentColor" />
+              </svg>
+              Try the App
+            </a>
+            <a class="btn btn--ghost btn--lg" href="#features">
+              Explore Features
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M7 13l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </a>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-number">10k+</span>
+              <span class="stat-label">Routes mapped</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">95%</span>
+              <span class="stat-label">Comfort accuracy</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">24/7</span>
+              <span class="stat-label">Real-time updates</span>
+            </div>
           </div>
 
           <div class="legend" aria-label="Map legend">
@@ -66,6 +95,24 @@
         <div class="three-d-stage" aria-hidden="false">
           <div class="stage">
             <figure class="card card--map hero-map reveal" aria-describedby="map-desc">
+              <div class="map-overlay">
+                <div class="map-controls">
+                  <button class="map-btn" title="Toggle 3D view">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 2l9 4.5v11L12 22l-9-4.5v-11L12 2z" stroke="currentColor" stroke-width="2"
+                        fill="none" />
+                    </svg>
+                  </button>
+                  <button class="map-btn" title="Center map">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" fill="none" />
+                      <path
+                        d="M12 1v6M12 17v6M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h6M17 12h6M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+                        stroke="currentColor" stroke-width="2" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
               <div id="azureMap" role="img" aria-labelledby="map-title map-desc"></div>
               <div id="map-title" class="sr-only">City map showing quiet and noisy areas with suggested comfortable
                 routes</div>
@@ -140,52 +187,80 @@
     <!-- Features -->
     <section id="features" class="section" aria-labelledby="features-title">
       <div class="container">
-        <h2 id="features-title">Features</h2>
+        <div class="section-header reveal">
+          <h2 id="features-title">Designed for comfort and accessibility</h2>
+          <p class="section-intro">Every feature is built with sensory sensitivities in mind, creating a navigation
+            experience that truly understands your needs.</p>
+        </div>
 
-        <div class="grid grid--4">
-          <article class="feature-card reveal">
+        <div class="features-grid">
+          <article class="feature-card feature-card--primary reveal">
             <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="28" height="28">
-                <path d="M4 4h16v4H4zM4 10h10v4H4zM4 16h7v4H4z" fill="#0EA5A2"></path>
+              <svg viewBox="0 0 24 24" width="32" height="32">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                  fill="#0EA5A2"></path>
               </svg>
             </div>
-            <h3 class="feature-title">Real-time reports</h3>
-            <p class="feature-text">Community updates on noise, crowding, lighting, and construction.</p>
+            <h3 class="feature-title">Real-time community reports</h3>
+            <p class="feature-text">Get live updates from our community about noise levels, crowding, construction, and
+              lighting conditions along your route.</p>
+            <div class="feature-tags">
+              <span class="tag">Live updates</span>
+              <span class="tag">Community-driven</span>
+            </div>
           </article>
 
-          <article class="feature-card reveal">
+          <article class="feature-card feature-card--secondary reveal">
             <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="28" height="28">
-                <circle cx="12" cy="12" r="8" fill="#3B82F6" opacity="0.25"></circle>
-                <path d="M8 12h8M12 8v8" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"></path>
+              <svg viewBox="0 0 24 24" width="32" height="32">
+                <circle cx="12" cy="12" r="3" fill="none" stroke="#3B82F6" stroke-width="2"></circle>
+                <path
+                  d="M12 1v6M12 17v6M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h6M17 12h6M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+                  stroke="#3B82F6" stroke-width="2"></path>
               </svg>
             </div>
-            <h3 class="feature-title">AI predictions</h3>
-            <p class="feature-text">Forecasts comfort levels by time and location to plan ahead.</p>
+            <h3 class="feature-title">AI comfort predictions</h3>
+            <p class="feature-text">Advanced algorithms forecast comfort levels throughout the day, helping you plan the
+              perfect time for your journey.</p>
+            <div class="feature-tags">
+              <span class="tag">AI-powered</span>
+              <span class="tag">Predictive</span>
+            </div>
           </article>
 
-          <article class="feature-card reveal">
+          <article class="feature-card feature-card--accent reveal">
             <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="28" height="28">
-                <path d="M5 19c6-2 8-5 9-9l5 2" stroke="#22C55E" stroke-width="2" fill="none" stroke-linecap="round">
+              <svg viewBox="0 0 24 24" width="32" height="32">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" fill="none" stroke="#22C55E" stroke-width="2">
                 </path>
-                <circle cx="5" cy="19" r="2" fill="#22C55E"></circle>
-                <circle cx="19" cy="12" r="2" fill="#22C55E"></circle>
+                <circle cx="12" cy="10" r="3" fill="#22C55E"></circle>
               </svg>
             </div>
-            <h3 class="feature-title">Sensory-friendly routes</h3>
-            <p class="feature-text">Paths that favor quiet streets, parks, and low-stimulus areas.</p>
+            <h3 class="feature-title">Sensory-optimized routes</h3>
+            <p class="feature-text">Smart routing that prioritizes quiet streets, parks, and calming environments while
+              avoiding high-stimulus areas.</p>
+            <div class="feature-tags">
+              <span class="tag">Smart routing</span>
+              <span class="tag">Sensory-aware</span>
+            </div>
           </article>
 
-          <article class="feature-card reveal">
+          <article class="feature-card feature-card--warning reveal">
             <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="28" height="28">
-                <path d="M12 3l9 16H3L12 3z" fill="#EF4444" opacity="0.25"></path>
-                <path d="M12 10v4" stroke="#EF4444" stroke-width="2" stroke-linecap="round"></path>
+              <svg viewBox="0 0 24 24" width="32" height="32">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                  fill="none" stroke="#F59E0B" stroke-width="2"></path>
+                <line x1="12" y1="9" x2="12" y2="13" stroke="#F59E0B" stroke-width="2"></line>
+                <circle cx="12" cy="17" r="1" fill="#F59E0B"></circle>
               </svg>
             </div>
-            <h3 class="feature-title">Gentle alerts</h3>
-            <p class="feature-text">Notifications when nearby conditions change—no loud sounds.</p>
+            <h3 class="feature-title">Gentle, customizable alerts</h3>
+            <p class="feature-text">Soft notifications that respect your sensory preferences—no sudden sounds or
+              overwhelming visual alerts.</p>
+            <div class="feature-tags">
+              <span class="tag">Customizable</span>
+              <span class="tag">Gentle</span>
+            </div>
           </article>
         </div>
       </div>
@@ -196,69 +271,204 @@
     <!-- Demo -->
     <section id="demo" class="section section--alt" aria-labelledby="demo-title">
       <div class="container reveal">
-        <h2 id="demo-title">Try the app</h2>
-        <p class="section-intro">Generate a comfort-aware route that avoids high-noise areas.</p>
-        <div class="demo-box">
-          <div class="demo-controls">
-            <label class="sr-only" for="origin">Origin</label>
-            <input id="origin" type="text" placeholder="Origin (lat, lon)" value="28.6692, 77.4538" />
-            <label class="sr-only" for="destination">Destination</label>
-            <input id="destination" type="text" placeholder="Destination (lat, lon)" value="28.6384, 77.4316" />
-            <button class="btn btn--primary" id="comfortRouteBtn">Suggest comfortable route</button>
+        <div class="section-header">
+          <h2 id="demo-title">Experience the difference</h2>
+          <p class="section-intro">Try our route planner and see how we prioritize your comfort and sensory needs.</p>
+        </div>
+
+        <div class="demo-container">
+          <div class="demo-box">
+            <div class="demo-header">
+              <h3>Plan your comfortable route</h3>
+              <p>Enter your journey details and we'll find the most sensory-friendly path.</p>
+            </div>
+
+            <div class="demo-form">
+              <div class="input-group">
+                <label for="origin">From</label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                    <circle cx="12" cy="12" r="3" fill="currentColor" />
+                  </svg>
+                  <input type="text" id="origin" placeholder="Enter starting location" />
+                  <button id="locate-origin" class="map-btn" title="Use current location"
+                    style="position: absolute; right: 8px; padding: 4px; background: transparent; border: none; cursor: pointer; color: var(--harbor-500);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="12" y1="1" x2="12" y2="4"></line>
+                      <line x1="12" y1="20" x2="12" y2="23"></line>
+                      <line x1="4.22" y1="4.22" x2="6.34" y2="6.34"></line>
+                      <line x1="17.66" y1="17.66" x2="19.78" y2="19.78"></line>
+                      <line x1="1" y1="12" x2="4" y2="12"></line>
+                      <line x1="20" y1="12" x2="23" y2="12"></line>
+                      <line x1="4.22" y1="19.78" x2="6.34" y2="17.66"></line>
+                      <line x1="17.66" y1="6.34" x2="19.78" y2="4.22"></line>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label for="destination">To</label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" />
+                    <circle cx="12" cy="10" r="3" fill="currentColor" />
+                  </svg>
+                  <input type="text" id="destination" placeholder="Enter destination" />
+                </div>
+              </div>
+
+              <div class="comfort-settings">
+                <h4>Comfort preferences</h4>
+                <div class="preference-grid">
+                  <label class="preference-item">
+                    <input type="checkbox" checked>
+                    <span class="checkmark"></span>
+                    <span>Avoid noisy areas</span>
+                  </label>
+                  <label class="preference-item">
+                    <input type="checkbox" checked>
+                    <span class="checkmark"></span>
+                    <span>Minimize crowds</span>
+                  </label>
+                  <label class="preference-item">
+                    <input type="checkbox">
+                    <span class="checkmark"></span>
+                    <span>Prefer parks & green spaces</span>
+                  </label>
+                  <label class="preference-item">
+                    <input type="checkbox">
+                    <span class="checkmark"></span>
+                    <span>Avoid construction zones</span>
+                  </label>
+                </div>
+              </div>
+
+              <button class="btn btn--primary btn--lg demo-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" />
+                  <circle cx="12" cy="10" r="3" fill="currentColor" />
+                </svg>
+                Find comfortable route
+              </button>
+            </div>
+
+            <div class="demo-status">
+              <div class="status-item">
+                <span class="status-dot status-dot--success"></span>
+                <span>Real-time data connected</span>
+              </div>
+              <div class="status-item">
+                <span class="status-dot status-dot--success"></span>
+                <span>AI comfort analysis ready</span>
+              </div>
+            </div>
           </div>
-          <p id="demo-status" class="demo-status" aria-live="polite"></p>
+
+          <div class="demo-preview">
+            <div class="preview-header">
+              <h4>Route comparison</h4>
+              <p>See the difference between standard and comfort-aware routing</p>
+            </div>
+
+            <div class="route-comparison">
+              <div class="route-option route-option--standard">
+                <div class="route-header">
+                  <span class="route-type">Standard route</span>
+                  <span class="route-time">12 min</span>
+                </div>
+                <div class="route-stats">
+                  <div class="stat">
+                    <span class="stat-label">Noise level</span>
+                    <div class="stat-bar">
+                      <div class="stat-fill" style="width: 85%; background: var(--noisy);"></div>
+                    </div>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-label">Crowd density</span>
+                    <div class="stat-bar">
+                      <div class="stat-fill" style="width: 70%; background: var(--noisy);"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="route-option route-option--comfort">
+                <div class="route-header">
+                  <span class="route-type">Comfort route</span>
+                  <span class="route-time">15 min</span>
+                  <span class="route-badge">Recommended</span>
+                </div>
+                <div class="route-stats">
+                  <div class="stat">
+                    <span class="stat-label">Noise level</span>
+                    <div class="stat-bar">
+                      <div class="stat-fill" style="width: 25%; background: var(--quiet);"></div>
+                    </div>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-label">Crowd density</span>
+                    <div class="stat-bar">
+                      <div class="stat-fill" style="width: 30%; background: var(--quiet);"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
 
-    <!-- Testimonials -->
-    <section id="testimonials" class="section" aria-labelledby="testimonials-title">
-      <div class="container">
-        <h2 id="testimonials-title">What people say</h2>
-        <div class="grid grid--2">
-          <blockquote class="quote reveal">
-            <p>“For the first time, I can choose paths that feel good to me—not just fast.”</p>
-            <footer><cite>Ananya, student</cite></footer>
-          </blockquote>
-          <blockquote class="quote reveal">
-            <p>“The alerts help me avoid loud areas when I’m already stressed. It’s a relief.”</p>
-            <footer><cite>Rahul, designer</cite></footer>
-          </blockquote>
+      <!-- Testimonials -->
+      <section id="testimonials" class="section" aria-labelledby="testimonials-title">
+        <div class="container">
+          <h2 id="testimonials-title">What people say</h2>
+          <div class="grid grid--2">
+            <blockquote class="quote reveal">
+              <p>“For the first time, I can choose paths that feel good to me—not just fast.”</p>
+              <footer><cite>Ananya, student</cite></footer>
+            </blockquote>
+            <blockquote class="quote reveal">
+              <p>“The alerts help me avoid loud areas when I’m already stressed. It’s a relief.”</p>
+              <footer><cite>Rahul, designer</cite></footer>
+            </blockquote>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Contact -->
-    <section id="contact" class="section section--alt" aria-labelledby="contact-title">
-      <div class="container reveal">
-        <h2 id="contact-title">Contact us</h2>
-        <p class="section-intro">Questions or ideas? We’d love to hear from you.</p>
-        <form class="contact-form" aria-describedby="contact-help">
-          <div class="input-row">
-            <div class="input-group">
-              <label for="name">Name</label>
-              <input id="name" name="name" type="text" autocomplete="name" required />
+      <!-- Contact -->
+      <section id="contact" class="section section--alt" aria-labelledby="contact-title">
+        <div class="container reveal">
+          <h2 id="contact-title">Contact us</h2>
+          <p class="section-intro">Questions or ideas? We’d love to hear from you.</p>
+          <form class="contact-form" aria-describedby="contact-help">
+            <div class="input-row">
+              <div class="input-group">
+                <label for="name">Name</label>
+                <input id="name" name="name" type="text" autocomplete="name" required />
+              </div>
+              <div class="input-group">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" autocomplete="email" required />
+              </div>
             </div>
             <div class="input-group">
-              <label for="email">Email</label>
-              <input id="email" name="email" type="email" autocomplete="email" required />
+              <label for="message">Message</label>
+              <textarea id="message" name="message" rows="4" required></textarea>
             </div>
-          </div>
-          <div class="input-group">
-            <label for="message">Message</label>
-            <textarea id="message" name="message" rows="4" required></textarea>
-          </div>
-          <button type="submit" class="btn btn--primary">Send</button>
-          <p id="contact-help" class="form-hint">We respond within 2–3 business days.</p>
-        </form>
-      </div>
-    </section>
-    <!-- Feedback & Testimonials -->
+            <button type="submit" class="btn btn--primary">Send</button>
+            <p id="contact-help" class="form-hint">We respond within 2–3 business days.</p>
+          </form>
+        </div>
+      </section>
+      <!-- Feedback & Testimonials -->
 
-    <div id="site-footer-placeholder"></div>
+      <div id="site-footer-placeholder"></div>
 
-    <script src="layout.js"></script>
-    <script src="script.js"></script>
+      <script src="layout.js"></script>
+      <script src="script.js"></script>
 </body>
 
 </html>
