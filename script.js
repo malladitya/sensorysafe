@@ -321,13 +321,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (findRouteBtn) {
     findRouteBtn.addEventListener('click', (e) => {
-      // Only handle redirection if we are on index.html and NOT harbor.html
-      const isHomePage = window.location.pathname.endsWith('index.html') ||
-        window.location.pathname === '/' ||
-        window.location.pathname.endsWith('sensorysafe/') ||
-        window.location.pathname === '';
+      // Use a more robust check: if these specific inputs exist, we are on the demo section
+      const isDemoFormExist = originInput && destinationInput && findRouteBtn.closest('.demo-form');
 
-      if (isHomePage && originInput && destinationInput) {
+      if (isDemoFormExist) {
         const start = originInput.value;
         const end = destinationInput.value;
 
@@ -336,6 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (start) params.append('start', start);
           if (end) params.append('end', end);
 
+          // Use relative path for better compatibility with GitHub Pages/subfolders
           window.location.href = `harbor.html?${params.toString()}`;
         } else {
           window.location.href = 'harbor.html';
