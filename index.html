@@ -408,6 +408,11 @@
                 </div>
               </div>
 
+              <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                <button onclick="reportCurrentLocation('noise')" class="btn" style="flex: 1;">🔊 Report Noise</button>
+                <button onclick="reportCurrentLocation('crowd')" class="btn" style="flex: 1;">👥 Report Crowd</button>
+              </div>
+              <button onclick="checkComfort()" class="btn" style="width: 100%; margin-bottom: 12px;">🤖 Check Comfort Level</button>
               <button class="btn btn--primary btn--lg demo-btn">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" />
@@ -425,6 +430,10 @@
               <div class="status-item">
                 <span class="status-dot status-dot--success"></span>
                 <span>AI comfort analysis ready</span>
+              </div>
+              <div class="status-item">
+                <span class="status-dot status-dot--success"></span>
+                <span id="community-reports-count">0 community reports</span>
               </div>
             </div>
           </div>
@@ -531,6 +540,7 @@
 
       <script src="layout.js"></script>
       <script src="script.js"></script>
+      <script src="helpers.js"></script>
       <script>
         // Welcome popup
         (function () {
@@ -554,6 +564,14 @@
           popup.onclick = (e) => { if (e.target === popup) closePopup(); };
           document.onkeydown = (e) => { if (e.key === 'Escape' && popup.style.display === 'flex') closePopup(); };
         })();
+
+        // Demo: Show AI comfort prediction
+        setInterval(() => {
+          if (window.comfortAI) {
+            const prediction = comfortAI.predict([77.4538, 28.6692], Date.now());
+            console.log(`AI Comfort Level: ${(prediction * 100).toFixed(0)}%`);
+          }
+        }, 5000);
       </script>
 </body>
 

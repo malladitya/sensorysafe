@@ -95,6 +95,147 @@ if ('IntersectionObserver' in window) {
 /* Azure Maps integration */
 let map, datasource, routeLayer;
 
+// Community Reports Storage
+const communityReports = {
+  noise: [],
+  crowds: [],
+  construction: []
+};
+
+// AI Comfort Prediction Engine
+const comfortAI = {
+  predict: function(location, time) {
+    const hour = new Date(time).getHours();
+    const baseComfort = 0.7;
+    const rushHourPenalty = (hour >= 8 && hour <= 10) || (hour >= 17 && hour <= 19) ? -0.3 : 0;
+    const nearbyReports = this.getNearbyReports(location);
+    const reportPenalty = nearbyReports.length * -0.1;
+    return Math.max(0, Math.min(1, baseComfort + rushHourPenalty + reportPenalty));
+  },
+  getNearbyReports: function(location) {
+    return [...communityReports.noise, ...communityReports.crowds, ...communityReports.construction]
+      .filter(r => Math.hypot(r.coords[0] - location[0], r.coords[1] - location[1]) < 0.02);
+  }
+};
+
+// Report Noise Zone
+function reportNoiseZone(coords, level, description) {
+  fetch('http://localhost:3000/api/reports/noise', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ coords, level, description })
+  })
+  .then(res => res.json())
+  .then(report => {
+    communityReports.noise.push(report);
+    addReportMarker(report, 'noise');
+    updateReportsCount();
+  })
+  .catch(() => {
+    const report = { coords, level, description, timestamp: Date.now() };
+    communityReports.noise.push(report);
+    addReportMarker(report, 'noise');
+    updateReportsCount();
+  });
+}
+
+// Report Crowded Area
+function reportCrowdedArea(coords, density, description) {
+  fetch('http://localhost:3000/api/reports/crowd', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ coords, density, description })
+  })
+  .then(res => res.json())
+  .then(report => {
+    communityReports.crowds.push(report);
+    addReportMarker(report, 'crowd');
+    updateReportsCount();
+  })
+  .catch(() => {
+    const report = { coords, density, description, timestamp: Date.now() };
+    communityReports.crowds.push(report);
+    addReportMarker(report, 'crowd');
+    updateReportsCount();
+  });
+}
+
+// Report Construction Zone
+function reportConstruction(coords, description) {
+  fetch('http://localhost:3000/api/reports/construction', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ coords, description })
+  })
+  .then(res => res.json())
+  .then(report => {
+    communityReports.construction.push(report);
+    addReportMarker(report, 'construction');
+    updateReportsCount();
+  })
+  .catch(() => {
+    const report = { coords, description, timestamp: Date.now() };
+    communityReports.construction.push(report);
+    addReportMarker(report, 'construction');
+    updateReportsCount();
+  });
+}
+
+// Load reports from backend
+function loadReports() {
+  fetch('http://localhost:3000/api/reports')
+    .then(res => res.json())
+    .then(data => {
+      communityReports.noise = data.noise;
+      communityReports.crowds = data.crowds;
+      communityReports.construction = data.construction;
+      data.noise.forEach(r => addReportMarker(r, 'noise'));
+      data.crowds.forEach(r => addReportMarker(r, 'crowd'));
+      data.construction.forEach(r => addReportMarker(r, 'construction'));
+      updateReportsCount();
+    })
+    .catch(() => console.log('Backend offline, using local mode'));
+}
+
+// Add marker to map
+function addReportMarker(report, type) {
+  if (!map || !datasource) return;
+  const colors = { noise: '#ef4444', crowd: '#f59e0b', construction: '#8b5cf6' };
+  const point = new atlas.data.Feature(new atlas.data.Point(report.coords), { 
+    type, 
+    color: colors[type],
+    description: report.description 
+  });
+  datasource.add(point);
+}
+
+// Update map with community reports
+function updateMapWithReports() {
+  if (!map || !datasource) return;
+  const allReports = [...communityReports.noise, ...communityReports.crowds, ...communityReports.construction];
+  allReports.forEach(report => {
+    const point = new atlas.data.Feature(new atlas.data.Point(report.coords), { type: 'report' });
+    datasource.add(point);
+  });
+}
+
+// Update community reports count in UI
+function updateReportsCount() {
+  const counter = document.getElementById('community-reports-count');
+  if (counter) {
+    const total = communityReports.noise.length + communityReports.crowds.length + communityReports.construction.length;
+    counter.textContent = `${total} community reports`;
+  }
+}
+
+window.reportNoiseZone = reportNoiseZone;
+window.reportCrowdedArea = reportCrowdedArea;
+window.reportConstruction = reportConstruction;
+window.comfortAI = comfortAI;
+window.communityReports = communityReports;
+window.updateReportsCount = updateReportsCount;
+window.loadReports = loadReports;
+
 function initMap() {
   map = new atlas.Map('azureMap', {
     center: [77.4538, 28.6692], // Ghaziabad approx
@@ -110,6 +251,8 @@ function initMap() {
   map.events.add('ready', () => {
     datasource = new atlas.source.DataSource();
     map.sources.add(datasource);
+
+    loadReports();
 
     // Heat layers (quiet vs noisy)
     const noisyPoints = [
@@ -168,9 +311,26 @@ function initMap() {
     datasource.add([origin, destination]);
 
     map.layers.add(new atlas.layer.SymbolLayer(datasource, null, {
-      iconOptions: { image: 'pin-round', allowOverlap: true },
-      textOptions: { textField: ['get', 'name'], offset: [0, 1.2] }
+      iconOptions: { 
+        image: 'marker-red',
+        allowOverlap: true,
+        size: 0.8
+      },
+      filter: ['any', ['==', ['get', 'type'], 'noise'], ['==', ['get', 'type'], 'crowd'], ['==', ['get', 'type'], 'construction']]
     }));
+
+    // Add popup on marker click
+    map.events.add('click', datasource, (e) => {
+      if (e.shapes && e.shapes.length > 0) {
+        const props = e.shapes[0].getProperties();
+        if (props.description) {
+          new atlas.Popup({
+            content: `<div style="padding:10px"><b>${props.type}</b><br>${props.description}</div>`,
+            position: e.shapes[0].getCoordinates()
+          }).open(map);
+        }
+      }
+    });
   });
 }
 
@@ -203,6 +363,10 @@ function generateComfortRoute(origin, dest) {
   const noisyZones = [
     [77.445, 28.655], [77.455, 28.665], [77.480, 28.645], [77.500, 28.635]
   ];
+
+  // Add community-reported zones
+  communityReports.noise.forEach(r => noisyZones.push(r.coords));
+  communityReports.construction.forEach(r => noisyZones.push(r.coords));
 
   // Calculate waypoints that avoid noisy areas
   const midLat = (origin[1] + dest[1]) / 2;
