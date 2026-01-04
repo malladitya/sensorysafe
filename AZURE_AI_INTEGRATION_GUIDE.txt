@@ -1,5 +1,5 @@
 AZURE AI INTEGRATION GUIDE FOR IMAGINE CUP
-RIVO Navigation - Sensory-Friendly Navigation App
+Rivo Navigation - Sensory-Friendly Navigation App
 
 ===========================================
 
@@ -16,7 +16,7 @@ TABLE OF CONTENTS
 
 1. OVERVIEW
 
-This guide shows you 3 easy ways to integrate Azure AI into your RIVO Navigation app for Imagine Cup. Each option takes 5-10 minutes to set up and will impress judges.
+This guide shows you 3 easy ways to integrate Azure AI into your Rivo Navigation app for Imagine Cup. Each option takes 5-10 minutes to set up and will impress judges.
 
 Why Azure AI for Imagine Cup?
 ✓ Bonus points from judges
@@ -45,7 +45,7 @@ SETUP STEPS:
 3. Search "Language Service"
 4. Click Create
 5. Fill in:
-   - Resource name: RIVO-language
+   - Resource name: Rivo-language
    - Region: East US
    - Pricing tier: Free F0
 6. Click "Review + Create"
@@ -346,7 +346,7 @@ function reportCurrentLocation(type) {
 7. DEMO TALKING POINTS FOR IMAGINE CUP
 
 OPENING:
-"RIVO Navigation uses Azure AI to make cities more accessible for people with sensory sensitivities."
+"Rivo Navigation uses Azure AI to make cities more accessible for people with sensory sensitivities."
 
 DURING DEMO:
 "Watch what happens when I report a noisy area. [Submit report with description 'Very loud, stressful traffic']
@@ -419,4 +419,4 @@ Good luck with Imagine Cup! 🏆
 
 Document Version: 1.0
 Last Updated: 2024
-Created for: RIVO Navigation - Imagine Cup Project
+Created for: Rivo Navigation - Imagine Cup Project

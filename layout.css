@@ -77,7 +77,7 @@
 
 /* Layout Container for Header/Footer only */
 /* Use a specific class or rely on .container but ensure it doesn't break other page layouts if they use .container differently. 
-   In RIVO.html, .container is not used for main layout content (uses max-w-7xl), so this is safe. 
+   In Rivo.html, .container is not used for main layout content (uses max-w-7xl), so this is safe. 
 */
 .site-header .container,
 .site-footer .container {

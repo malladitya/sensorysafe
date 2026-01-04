@@ -1,62 +1,62 @@
-# RIVO REBRANDING GUIDE
-# Complete instructions to rename RIVO to Rivo
+# Rivo REBRANDING GUIDE
+# Complete instructions to rename Rivo to Rivo
 
 ## STEP 1: RENAME FILES MANUALLY
 
 In File Explorer, rename these files:
-1. RIVO.html → rivo.html
-2. RIVOazuremap.html → rivoazuremap.html
+1. Rivo.html → Rivo.html
+2. Rivoazuremap.html → Rivoazuremap.html
 
 ## STEP 2: FIND AND REPLACE IN ALL FILES
 
 Use your code editor's "Find in Files" feature (Ctrl+Shift+F in VS Code):
 
-### Replace "RIVO" with "Rivo":
-Find: RIVO
+### Replace "Rivo" with "Rivo":
+Find: Rivo
 Replace with: Rivo
 Files: *.html, *.js, *.md, *.txt, *.json
 
-### Replace "RIVO" with "rivo":
-Find: RIVO
-Replace with: rivo
+### Replace "Rivo" with "Rivo":
+Find: Rivo
+Replace with: Rivo
 Files: *.html, *.js, *.css, *.md, *.txt
 
-### Replace "--RIVO-" with "--rivo-" (CSS variables):
-Find: --RIVO-
-Replace with: --rivo-
+### Replace "--Rivo-" with "--Rivo-" (CSS variables):
+Find: --Rivo-
+Replace with: --Rivo-
 Files: *.css, *.html
 
 ## STEP 3: UPDATE SPECIFIC FILES
 
 ### package.json
 Change:
-- "name": "sensorysafe-backend" → "name": "rivo-backend"
+- "name": "sensorysafe-backend" → "name": "Rivo-backend"
 
 ### README.md
 Change all instances of:
-- RIVO Navigation → Rivo
-- RIVO → Rivo
+- Rivo Navigation → Rivo
+- Rivo → Rivo
 
 ### server.js
-No changes needed (no RIVO references)
+No changes needed (no Rivo references)
 
 ## STEP 4: UPDATE LINKS
 
 ### In index.html:
-Change: href="RIVO.html" → href="rivo.html"
+Change: href="Rivo.html" → href="Rivo.html"
 
 ### In script.js:
-Change: window.location.href = 'RIVO.html' → window.location.href = 'rivo.html'
+Change: window.location.href = 'Rivo.html' → window.location.href = 'Rivo.html'
 
 ## STEP 5: VERIFY CHANGES
 
 Check these files have been updated:
 ✓ index.html - Title, headings, links
-✓ rivo.html (renamed from RIVO.html)
-✓ rivoazuremap.html (renamed from RIVOazuremap.html)
+✓ Rivo.html (renamed from Rivo.html)
+✓ Rivoazuremap.html (renamed from Rivoazuremap.html)
 ✓ components/header.html - Logo, navigation
 ✓ components/footer.html - Copyright
-✓ style.css - CSS variables (--RIVO- to --rivo-)
+✓ style.css - CSS variables (--Rivo- to --Rivo-)
 ✓ layout.css - CSS variables
 ✓ script.js - Comments, window.location
 ✓ TECHNICAL_DOCUMENTATION.md - All references
@@ -67,16 +67,16 @@ Check these files have been updated:
 ## QUICK COMMAND (if using VS Code):
 
 1. Press Ctrl+Shift+H (Find and Replace in Files)
-2. Find: RIVO
+2. Find: Rivo
    Replace: Rivo
    Click "Replace All"
 
-3. Find: RIVO
-   Replace: rivo
+3. Find: Rivo
+   Replace: Rivo
    Click "Replace All"
 
-4. Find: --RIVO-
-   Replace: --rivo-
+4. Find: --Rivo-
+   Replace: --Rivo-
    Click "Replace All"
 
 ## DONE!

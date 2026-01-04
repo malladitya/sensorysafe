@@ -104,7 +104,7 @@ const communityReports = {
 
 // AI Comfort Prediction Engine
 const comfortAI = {
-  predict: function(location, time) {
+  predict: function (location, time) {
     const hour = new Date(time).getHours();
     const baseComfort = 0.7;
     const rushHourPenalty = (hour >= 8 && hour <= 10) || (hour >= 17 && hour <= 19) ? -0.3 : 0;
@@ -112,7 +112,7 @@ const comfortAI = {
     const reportPenalty = nearbyReports.length * -0.1;
     return Math.max(0, Math.min(1, baseComfort + rushHourPenalty + reportPenalty));
   },
-  getNearbyReports: function(location) {
+  getNearbyReports: function (location) {
     return [...communityReports.noise, ...communityReports.crowds, ...communityReports.construction]
       .filter(r => Math.hypot(r.coords[0] - location[0], r.coords[1] - location[1]) < 0.02);
   }
@@ -125,18 +125,18 @@ function reportNoiseZone(coords, level, description) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ coords, level, description })
   })
-  .then(res => res.json())
-  .then(report => {
-    communityReports.noise.push(report);
-    addReportMarker(report, 'noise');
-    updateReportsCount();
-  })
-  .catch(() => {
-    const report = { coords, level, description, timestamp: Date.now() };
-    communityReports.noise.push(report);
-    addReportMarker(report, 'noise');
-    updateReportsCount();
-  });
+    .then(res => res.json())
+    .then(report => {
+      communityReports.noise.push(report);
+      addReportMarker(report, 'noise');
+      updateReportsCount();
+    })
+    .catch(() => {
+      const report = { coords, level, description, timestamp: Date.now() };
+      communityReports.noise.push(report);
+      addReportMarker(report, 'noise');
+      updateReportsCount();
+    });
 }
 
 // Report Crowded Area
@@ -146,18 +146,18 @@ function reportCrowdedArea(coords, density, description) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ coords, density, description })
   })
-  .then(res => res.json())
-  .then(report => {
-    communityReports.crowds.push(report);
-    addReportMarker(report, 'crowd');
-    updateReportsCount();
-  })
-  .catch(() => {
-    const report = { coords, density, description, timestamp: Date.now() };
-    communityReports.crowds.push(report);
-    addReportMarker(report, 'crowd');
-    updateReportsCount();
-  });
+    .then(res => res.json())
+    .then(report => {
+      communityReports.crowds.push(report);
+      addReportMarker(report, 'crowd');
+      updateReportsCount();
+    })
+    .catch(() => {
+      const report = { coords, density, description, timestamp: Date.now() };
+      communityReports.crowds.push(report);
+      addReportMarker(report, 'crowd');
+      updateReportsCount();
+    });
 }
 
 // Report Construction Zone
@@ -167,18 +167,18 @@ function reportConstruction(coords, description) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ coords, description })
   })
-  .then(res => res.json())
-  .then(report => {
-    communityReports.construction.push(report);
-    addReportMarker(report, 'construction');
-    updateReportsCount();
-  })
-  .catch(() => {
-    const report = { coords, description, timestamp: Date.now() };
-    communityReports.construction.push(report);
-    addReportMarker(report, 'construction');
-    updateReportsCount();
-  });
+    .then(res => res.json())
+    .then(report => {
+      communityReports.construction.push(report);
+      addReportMarker(report, 'construction');
+      updateReportsCount();
+    })
+    .catch(() => {
+      const report = { coords, description, timestamp: Date.now() };
+      communityReports.construction.push(report);
+      addReportMarker(report, 'construction');
+      updateReportsCount();
+    });
 }
 
 // Load reports from backend
@@ -201,10 +201,10 @@ function loadReports() {
 function addReportMarker(report, type) {
   if (!map || !datasource) return;
   const colors = { noise: '#ef4444', crowd: '#f59e0b', construction: '#8b5cf6' };
-  const point = new atlas.data.Feature(new atlas.data.Point(report.coords), { 
-    type, 
+  const point = new atlas.data.Feature(new atlas.data.Point(report.coords), {
+    type,
     color: colors[type],
-    description: report.description 
+    description: report.description
   });
   datasource.add(point);
 }
@@ -311,7 +311,7 @@ function initMap() {
     datasource.add([origin, destination]);
 
     map.layers.add(new atlas.layer.SymbolLayer(datasource, null, {
-      iconOptions: { 
+      iconOptions: {
         image: 'marker-red',
         allowOverlap: true,
         size: 0.8
@@ -491,9 +491,9 @@ document.addEventListener('DOMContentLoaded', () => {
           if (end) params.append('end', end);
 
           // Use relative path for better compatibility with GitHub Pages/subfolders
-          window.location.href = `rivo.html?${params.toString()}`;
+          window.location.href = `Rivo.html?${params.toString()}`;
         } else {
-          window.location.href = 'rivo.html';
+          window.location.href = 'Rivo.html';
         }
       }
     });

@@ -1,4 +1,4 @@
-# RIVO Navigation - Demo Video & Presentation Script
+# Rivo Navigation - Demo Video & Presentation Script
 
 ## 🎬 DEMO VIDEO SCRIPT (5-7 minutes)
 
@@ -8,7 +8,7 @@
 
 **[Show title slide with app logo]**
 
-"Hello! I'm presenting RIVO Navigation - a sensory-friendly navigation app that helps people with autism and sensory sensitivities find comfortable, low-stress routes in cities."
+"Hello! I'm presenting Rivo Navigation - a sensory-friendly navigation app that helps people with autism and sensory sensitivities find comfortable, low-stress routes in cities."
 
 **[Show problem statement slide]**
 
@@ -34,7 +34,7 @@ This affects 1 in 36 children with autism, plus millions with sensory processing
 
 **[Show app homepage]**
 
-"RIVO Navigation solves this with three key innovations:
+"Rivo Navigation solves this with three key innovations:
 
 **1. AI Comfort Predictions**
 [Show comfort check feature]
@@ -117,7 +117,7 @@ Just 3 extra minutes for a much calmer journey.'
 
 **[Show impact metrics or testimonials]**
 
-"RIVO Navigation provides:
+"Rivo Navigation provides:
 
 ✅ **Independence**: People can travel confidently without caregiver support
 ✅ **Reduced Anxiety**: Predictable, comfortable routes reduce stress
@@ -144,7 +144,7 @@ Just 3 extra minutes for a much calmer journey.'
 
 **[Show call-to-action slide]**
 
-"RIVO Navigation isn't just about getting from A to B. It's about making cities accessible for everyone, regardless of their sensory needs.
+"Rivo Navigation isn't just about getting from A to B. It's about making cities accessible for everyone, regardless of their sensory needs.
 
 We're creating a world where navigation is comfortable, not just fast.
 
@@ -193,7 +193,7 @@ Thank you! Questions?"
 5. Accessibility-first design
 
 ### **Slide 9: Competitive Advantage**
-| Feature | RIVO | Google Maps | Waze |
+| Feature | Rivo | Google Maps | Waze |
 |---------|--------|-------------|------|
 | Sensory data | ✅ | ❌ | ❌ |
 | Comfort routing | ✅ | ❌ | ❌ |

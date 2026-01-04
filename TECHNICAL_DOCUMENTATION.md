@@ -1,7 +1,7 @@
-# RIVO Navigation - Technical Documentation
+# Rivo Navigation - Technical Documentation
 
 ## Overview
-RIVO Navigation is a sensory-friendly navigation app designed for people with autism and sensory sensitivities. It uses AI and community data to find comfortable, low-stimulus routes.
+Rivo Navigation is a sensory-friendly navigation app designed for people with autism and sensory sensitivities. It uses AI and community data to find comfortable, low-stimulus routes.
 
 ---
 
@@ -93,7 +93,7 @@ RIVO Navigation is a sensory-friendly navigation app designed for people with au
 ```
 sensorysafe/
 ├── index.html          # Main landing page
-├── RIVO.html         # Navigation app interface
+├── Rivo.html         # Navigation app interface
 ├── style.css           # Global styles
 ├── layout.css          # Layout components
 ├── script.js           # Core functionality
@@ -305,4 +305,4 @@ For technical support: [Contact Form on Website]
 
 **Version**: 1.0.0  
 **Last Updated**: 2024  
-**Maintained By**: RIVO Navigation Team
+**Maintained By**: Rivo Navigation Team
