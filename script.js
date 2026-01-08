@@ -518,8 +518,8 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.disabled = true;
 
       // Prepare params
-      const serviceID = 'YOUR_SERVICE_ID'; // User to replace
-      const templateID = 'YOUR_TEMPLATE_ID'; // User to replace
+      const serviceID = 'service_woyyy7'; // User to replace
+      const templateID = 'template_wdigq3e'; // User to replace
 
       // Send via EmailJS (sendForm automatically captures input values by name attribute)
       emailjs.sendForm(serviceID, templateID, this)
