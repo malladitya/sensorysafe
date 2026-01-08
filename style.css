@@ -1870,6 +1870,7 @@ body {
   transform: rotate(0deg);
 }
 
+html.dark-mode,
 .dark-mode {
   --bg: #0B1220;
   --text: #E5E7EB;
