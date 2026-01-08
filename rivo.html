@@ -310,6 +310,7 @@
             display: inline-block;
             width: 40px;
             height: 20px;
+            cursor: pointer;
         }
 
         .toggle-checkbox {
@@ -317,9 +318,12 @@
             opacity: 0;
             width: 100%;
             height: 100%;
+            top: 0;
+            left: 0;
             margin: 0;
+            padding: 0;
             cursor: pointer;
-            z-index: 2;
+            z-index: 10;
         }
 
         .toggle-label {
@@ -327,16 +331,16 @@
             cursor: pointer;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
+            width: 100%;
+            height: 100%;
             background-color: var(--input-border);
             border-radius: 20px;
-            transition: 0.3s;
-            pointer-events: none;
+            transition: background-color 0.3s;
             z-index: 1;
         }
 
-        .toggle-container input:checked+.toggle-label {
+        /* Fixed selector - works with div labels */
+        .toggle-checkbox:checked ~ .toggle-label {
             background-color: var(--Rivo-500);
         }
 
@@ -348,10 +352,11 @@
             height: 16px;
             background-color: white;
             border-radius: 50%;
-            transition: 0.3s;
+            transition: transform 0.3s ease;
+            z-index: 2;
         }
 
-        .toggle-container input:checked+.toggle-label .toggle-slider {
+        .toggle-checkbox:checked ~ .toggle-label .toggle-slider {
             transform: translateX(20px);
         }
 
@@ -723,10 +728,10 @@
                                     </div>
                                 </div>
                                 <div class="toggle-container">
-                                    <input type="checkbox" id="toggle-crowds" class="toggle-checkbox" checked>
-                                    <label class="toggle-label" for="toggle-crowds">
+                                    <input type="checkbox" id="toggle-crowds" class="toggle-checkbox">
+                                    <div class="toggle-label">
                                         <span class="toggle-slider"></span>
-                                    </label>
+                                    </div>
                                 </div>
                             </label>
 
@@ -741,10 +746,10 @@
                                     </div>
                                 </div>
                                 <div class="toggle-container">
-                                    <input type="checkbox" id="toggle-const" class="toggle-checkbox" checked>
-                                    <label class="toggle-label" for="toggle-const">
+                                    <input type="checkbox" id="toggle-const" class="toggle-checkbox">
+                                    <div class="toggle-label">
                                         <span class="toggle-slider"></span>
-                                    </label>
+                                    </div>
                                 </div>
                             </label>
 
@@ -759,10 +764,10 @@
                                     </div>
                                 </div>
                                 <div class="toggle-container">
-                                    <input type="checkbox" id="toggle-traffic" class="toggle-checkbox" checked>
-                                    <label class="toggle-label" for="toggle-traffic">
+                                    <input type="checkbox" id="toggle-traffic" class="toggle-checkbox">
+                                    <div class="toggle-label">
                                         <span class="toggle-slider"></span>
-                                    </label>
+                                    </div>
                                 </div>
                             </label>
                         </div>
@@ -2236,6 +2241,45 @@
             const noiseValue = document.getElementById('noiseValue');
             const toggleCrowds = document.getElementById('toggle-crowds');
             const toggleConst = document.getElementById('toggle-const');
+            
+            // Safari fix: Add click handlers to toggle containers
+            const addToggleHandler = (checkboxId) => {
+                const checkbox = document.getElementById(checkboxId);
+                if (!checkbox) {
+                    console.error('Checkbox not found:', checkboxId);
+                    return;
+                }
+                
+                // Set initial checked state
+                checkbox.checked = true;
+                console.log('✓ Initialized', checkboxId, 'checked:', checkbox.checked);
+                
+                const container = checkbox.closest('.toggle-container');
+                if (!container) {
+                    console.error('Container not found for', checkboxId);
+                    return;
+                }
+                
+                // Direct checkbox click
+                checkbox.addEventListener('change', (e) => {
+                    console.log('✓ Change event:', checkboxId, '→', checkbox.checked);
+                });
+                
+                // Container/label click fallback for Safari
+                container.addEventListener('click', (e) => {
+                    if (e.target === checkbox) return; // Let native click work
+                    console.log('✓ Container click on', checkboxId);
+                    checkbox.checked = !checkbox.checked;
+                    checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+                    console.log('  Toggled to:', checkbox.checked);
+                });
+            };
+            
+            addToggleHandler('toggle-crowds');
+            addToggleHandler('toggle-const');
+            addToggleHandler('toggle-traffic');
+            
+            console.log('✓ All toggles initialized');
 
             if (noiseSlider && noiseValue) {
                 noiseSlider.addEventListener('input', (e) => {
